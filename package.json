@@ -1,0 +1,47 @@
+{
+  "name": "wechat-enterprise",
+  "version": "1.0.0",
+  "description": "微信公共平台企业号版本Node库",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test-all"
+  },
+  "config":{
+    "travis-cov": {
+      "threshold": 98
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/node-webot/wechat.git"
+  },
+  "keywords": [
+    "weixin",
+    "wechat",
+    "enterprise"
+  ],
+  "dependencies": {
+    "xml2js": "0.4.4",
+    "ejs": ">=1.0.0",
+    "formstream": ">=0.0.8",
+    "urllib": ">=0.5.17"
+  },
+  "devDependencies": {
+    "supertest": "*",
+    "mocha": "*",
+    "expect.js": "*",
+    "connect": "2.5.*",
+    "travis-cov": "*",
+    "coveralls": "*",
+    "mocha-lcov-reporter": "*",
+    "muk": "*",
+    "rewire": "*",
+    "istanbul": "*"
+  },
+  "author": "Jackson Tian",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "directories": {
+    "test": "test"
+  }
+}
