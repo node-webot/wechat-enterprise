@@ -15,6 +15,5 @@ API.mixin(require('./lib/api_tag'));
 API.mixin(require('./lib/api_user'));
 
 wechat.API = API;
-wechat.OAuth = require('./lib/oauth');
 wechat.util = require('./lib/util');
 module.exports = wechat;
