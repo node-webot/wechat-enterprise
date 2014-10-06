@@ -1,7 +1,6 @@
-var querystring = require('querystring');
 var request = require('supertest');
-var template = require('./support').template;
 var tail = require('./support').tail;
+var postData = require('./support').postData;
 
 var connect = require('connect');
 var wechat = require('../');
@@ -16,47 +15,59 @@ var corpid = 'wx20d578aedfdf58fa';
 var config = {encodingAESKey: encodingAESKey, token: token, corpId: corpid};
 
 app.use('/wechat', wechat(config, function (req, res, next) {
-  // 微信输入信息都在req.weixin上
-  var info = req.weixin;
-  // 回复屌丝(普通回复)
-  if (info.FromUserName === 'diaosi') {
-    res.reply('hehe');
-  } else if (info.FromUserName === 'test') {
-    res.reply({
-      content: 'text object',
-      type: 'text'
-    });
-  } else if (info.FromUserName === 'hehe') {
-    res.reply({
-      title: "来段音乐吧<",
-      description: "一无所有>",
-      musicUrl: "http://mp3.com/xx.mp3?a=b&c=d",
-      hqMusicUrl: "http://mp3.com/xx.mp3?foo=bar"
-    });
-  } else if (info.FromUserName === 'cs') {
-    res.transfer2CustomerService();
-  } else if (info.FromUserName === 'kf') {
-    res.transfer2CustomerService('test1@test');
-  } else {
-  // 回复高富帅(图文回复)
-    res.reply([
-      {
-        title: '你来我家接我吧',
-        description: '这是女神与高富帅之间的对话',
-        picurl: 'http://nodeapi.cloudfoundry.com/qrcode.jpg',
-        url: 'http://nodeapi.cloudfoundry.com/'
-      }
-    ]);
-  }
+  res.reply('hehe');
 }));
 
 describe('wechat.js', function () {
-  it('should ok', function (done) {
-    var _tail = tail(token);
-    console.log(_tail);
-    request(app)
-      .get('/wechat' + _tail)
-      .expect(200)
+  describe('get', function () {
+    it('should ok', function (done) {
+      var echoStr = 'node rock';
+      var cryptor = new WXBizMsgCrypt(token, encodingAESKey, corpid);
+      var _tail = tail(token, cryptor.encrypt(echoStr), true);
+      request(app)
+        .get('/wechat?' + _tail)
+        .expect(200)
+        .expect(echoStr, done);
+    });
+
+    it('should not ok', function (done) {
+      var echoStr = 'node rock';
+      var cryptor = new WXBizMsgCrypt(token, encodingAESKey, corpid);
+      var _tail = tail('fake_token', cryptor.encrypt(echoStr), true);
+      request(app)
+        .get('/wechat?' + _tail)
+        .expect(401)
+        .expect('Invalid signature', done);
+    });
+  });
+
+  describe('post', function () {
+    it('should 500', function (done) {
+      request(app)
+      .post('/wechat')
+      .expect(500)
+      .expect(/body is empty/, done);
+    });
+
+    it('should 401 invalid signature', function (done) {
+      var cryptor = new WXBizMsgCrypt(token, encodingAESKey, corpid);
+      var xml = '<xml></xml>';
+      var data = postData('fake_token', cryptor.encrypt(xml));
+      request(app)
+      .post('/wechat?' + data.querystring)
+      .send(data.xml)
+      .expect(401)
       .expect('Invalid signature', done);
+    });
+
+    it('should 200', function (done) {
+      var cryptor = new WXBizMsgCrypt(token, encodingAESKey, corpid);
+      var xml = '<xml></xml>';
+      var data = postData(token, cryptor.encrypt(xml));
+      request(app)
+      .post('/wechat?' + data.querystring)
+      .send(data.xml)
+      .expect(200, done);
+    });
   });
 });
