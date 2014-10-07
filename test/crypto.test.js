@@ -22,7 +22,7 @@ describe('lib/msg_crypto.js', function () {
   it('getSignature should ok', function () {
     var cryptor = new WXBizMsgCrypt(config.token, config.encodingAESKey, config.corpid);
     var signature = cryptor.getSignature('timestamp', 'nonce', 'encrypt');
-    expect(signature).to.be('8c4c4b3c6d1ecd26a417352942aa09a8fc5dda2c');
+    expect(signature).to.be('8edac0945683c119ee71c9f6256d76c48aa08a96');
   });
 
   it('encrypt/decrypt should ok', function () {

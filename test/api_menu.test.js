@@ -3,7 +3,7 @@ var config = require('./config');
 var API = require('../').API;
 
 describe('menu', function () {
-  var api = new API(config.corpid, config.corpsecret, '0');
+  var api = new API(config.corpid, config.corpsecret, '1');
   before(function (done) {
     api.getAccessToken(done);
   });
@@ -24,7 +24,7 @@ describe('menu', function () {
       expect(err).not.to.be.ok();
       expect(menu).to.have.property('menu');
       expect(menu.menu).to.have.property('button');
-      expect(menu.menu.button).to.have.length(3);
+      expect(menu.menu.button).to.have.length(2);
       done();
     });
   });

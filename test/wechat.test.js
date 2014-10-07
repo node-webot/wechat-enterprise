@@ -4,26 +4,24 @@ var postData = require('./support').postData;
 
 var connect = require('connect');
 var wechat = require('../');
+var cfg = require('./config');
 var WXBizMsgCrypt = require('../lib/msg_crypto');
 
 var app = connect();
 app.use(connect.query());
-var token = 'WMzxFqFFVKcIwOrDn7Ke5eTBA2LER';
-var encodingAESKey = 'NDhmYjU2ZWIxMGZmZWIxM2ZjMGVmNTUxYmJjYTNiMWI';
-var corpid = 'wx20d578aedfdf58fa';
 
-var config = {encodingAESKey: encodingAESKey, token: token, corpId: corpid};
+var config = {encodingAESKey: cfg.encodingAESKey, token: cfg.token, corpId: cfg.corpid};
 
 app.use('/wechat', wechat(config, function (req, res, next) {
   res.reply('hehe');
 }));
 
 describe('wechat.js', function () {
+  var cryptor = new WXBizMsgCrypt(cfg.token, cfg.encodingAESKey, cfg.corpid);
   describe('get', function () {
     it('should ok', function (done) {
       var echoStr = 'node rock';
-      var cryptor = new WXBizMsgCrypt(token, encodingAESKey, corpid);
-      var _tail = tail(token, cryptor.encrypt(echoStr), true);
+      var _tail = tail(cfg.token, cryptor.encrypt(echoStr), true);
       request(app)
         .get('/wechat?' + _tail)
         .expect(200)
@@ -32,7 +30,6 @@ describe('wechat.js', function () {
 
     it('should not ok', function (done) {
       var echoStr = 'node rock';
-      var cryptor = new WXBizMsgCrypt(token, encodingAESKey, corpid);
       var _tail = tail('fake_token', cryptor.encrypt(echoStr), true);
       request(app)
         .get('/wechat?' + _tail)
@@ -50,7 +47,6 @@ describe('wechat.js', function () {
     });
 
     it('should 401 invalid signature', function (done) {
-      var cryptor = new WXBizMsgCrypt(token, encodingAESKey, corpid);
       var xml = '<xml></xml>';
       var data = postData('fake_token', cryptor.encrypt(xml));
       request(app)
@@ -61,9 +57,8 @@ describe('wechat.js', function () {
     });
 
     it('should 200', function (done) {
-      var cryptor = new WXBizMsgCrypt(token, encodingAESKey, corpid);
       var xml = '<xml></xml>';
-      var data = postData(token, cryptor.encrypt(xml));
+      var data = postData(cfg.token, cryptor.encrypt(xml));
       request(app)
       .post('/wechat?' + data.querystring)
       .send(data.xml)

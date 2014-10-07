@@ -1,6 +1,7 @@
 var request = require('supertest');
 var template = require('./support').template;
-var tail = require('./support').tail;
+var support = require('./support');
+var expect = require('expect.js');
 
 var connect = require('connect');
 var wechat = require('../');
@@ -12,20 +13,17 @@ app.use(connect.query());
 app.use(connect.cookieParser());
 app.use(connect.session({secret: 'keyboard cat', cookie: {maxAge: 60000}}));
 
-var token = 'WMzxFqFFVKcIwOrDn7Ke5eTBA2LER';
-var encodingAESKey = 'NDhmYjU2ZWIxMGZmZWIxM2ZjMGVmNTUxYmJjYTNiMWI';
-var corpid = 'wx20d578aedfdf58fa';
-
-var config = {encodingAESKey: encodingAESKey, token: token, corpId: corpid};
+var cfg = require('./config');
+var config = {encodingAESKey: cfg.encodingAESKey, token: cfg.token, corpId: cfg.corpid};
 
 app.use('/wechat', wechat(config, wechat.text(function (info, req, res, next) {
   if (info.Content === 'list') {
     res.wait('view', function (err) {
-      should.not.exist(err);
+      expect(err).to.not.be.ok();
     });
   } else if (info.Content === 'undefinedlist') {
     res.wait('undefined', function (err) {
-      should.exist(err);
+      expect(err).to.be.ok();
     });
   } else {
     res.reply('hehe');
@@ -49,163 +47,202 @@ describe('wechat.js', function () {
   });
 
   describe('talk', function () {
+    var cryptor = new wechat.WXBizMsgCrypt(cfg.token, cfg.encodingAESKey, cfg.corpid);
+
     it('should reply hehe when not trigger the list', function (done) {
       var info = {
-        sp: 'nvshen',
-        user: 'diaosi',
+        fromUser: 'test',
+        toUser: 'test',
         type: 'text',
-        text: 'a'
+        content: 'a'
       };
 
+      var xml = support.buildXML(info);
+      var data = support.postData(cfg.token, cryptor.encrypt(xml));
       request(app)
-      .post('/wechat' + tail())
-      .send(template(info))
+      .post('/wechat?' + data.querystring)
+      .send(data.xml)
       .expect(200)
       .end(function (err, res) {
         if (err) return done(err);
         var body = res.text.toString();
-        body.should.include('<Content><![CDATA[hehe]]></Content>');
-        done();
+        support.parse(body, function (err, result) {
+          var message = cryptor.decrypt(result.Encrypt).message;
+          expect(message).to.contain('<Content><![CDATA[hehe]]></Content>');
+          done();
+        });
       });
     });
 
     it('should reply the list when trigger the list', function (done) {
       var info = {
-        sp: 'nvshen',
-        user: 'diaosi',
+        fromUser: 'test',
+        toUser: 'test',
         type: 'text',
-        text: 'list'
+        content: 'list'
       };
 
+      var xml = support.buildXML(info);
+      var data = support.postData(cfg.token, cryptor.encrypt(xml));
       request(app)
-      .post('/wechat' + tail())
-      .send(template(info))
+      .post('/wechat?' + data.querystring)
+      .send(data.xml)
       .expect(200)
       .end(function (err, res) {
         if (err) return done(err);
         var body = res.text.toString();
-        body.should.include('<Content><![CDATA[回复a查看我的性别\n回复b查看我的年龄\n回复c查看我的性取向\n回复nowait退出问答]]></Content>');
-        done();
+        support.parse(body, function (err, result) {
+          var message = cryptor.decrypt(result.Encrypt).message;
+          expect(message).to.contain('<Content><![CDATA[回复a查看我的性别\n回复b查看我的年龄\n回复c查看我的性取向\n回复nowait退出问答]]></Content>');
+          done();
+        });
       });
     });
 
     it('should reply with list', function (done) {
       var info = {
-        sp: 'nvshen',
-        user: 'diaosi',
+        fromUser: 'test',
+        toUser: 'test',
         type: 'text',
-        text: 'a'
+        content: 'a'
       };
 
+      var xml = support.buildXML(info);
+      var data = support.postData(cfg.token, cryptor.encrypt(xml));
       request(app)
-      .post('/wechat' + tail())
-      .send(template(info))
+      .post('/wechat?' + data.querystring)
+      .send(data.xml)
       .expect(200)
       .end(function (err, res) {
         if (err) return done(err);
         var body = res.text.toString();
-        body.should.include('<Content><![CDATA[我是个妹纸哟]]></Content>');
-        done();
+        support.parse(body, function (err, result) {
+          var message = cryptor.decrypt(result.Encrypt).message;
+          expect(message).to.contain('<Content><![CDATA[我是个妹纸哟]]></Content>');
+          done();
+        });
       });
     });
 
     it('should reply with list also', function (done) {
       var info = {
-        sp: 'nvshen',
-        user: 'diaosi',
+        fromUser: 'test',
+        toUser: 'test',
         type: 'text',
-        text: 'b'
+        content: 'b'
       };
 
+      var xml = support.buildXML(info);
+      var data = support.postData(cfg.token, cryptor.encrypt(xml));
       request(app)
-      .post('/wechat' + tail())
-      .send(template(info))
+      .post('/wechat?' + data.querystring)
+      .send(data.xml)
       .expect(200)
-      .end(function(err, res){
+      .end(function (err, res) {
         if (err) return done(err);
         var body = res.text.toString();
-        body.should.include('<Content><![CDATA[我今年18岁]]></Content>');
-        done();
+        support.parse(body, function (err, result) {
+          var message = cryptor.decrypt(result.Encrypt).message;
+          expect(message).to.contain('<Content><![CDATA[我今年18岁]]></Content>');
+          done();
+        });
       });
     });
 
     it('should reply with text', function (done) {
       var info = {
-        sp: 'nvshen',
-        user: 'diaosi',
+        fromUser: 'test',
+        toUser: 'test',
         type: 'text',
-        text: 'c'
+        content: 'c'
       };
 
+      var xml = support.buildXML(info);
+      var data = support.postData(cfg.token, cryptor.encrypt(xml));
       request(app)
-      .post('/wechat' + tail())
-      .send(template(info))
+      .post('/wechat?' + data.querystring)
+      .send(data.xml)
       .expect(200)
-      .end(function(err, res){
+      .end(function (err, res) {
         if (err) return done(err);
         var body = res.text.toString();
-        body.should.include('<Content><![CDATA[这样的事情怎么好意思告诉你啦- -]]></Content>');
-        done();
+        support.parse(body, function (err, result) {
+          var message = cryptor.decrypt(result.Encrypt).message;
+          expect(message).to.contain('<Content><![CDATA[这样的事情怎么好意思告诉你啦- -]]></Content>');
+          done();
+        });
       });
     });
 
     it('should reply with default handle', function (done) {
       var info = {
-        sp: 'nvshen',
-        user: 'diaosi',
+        fromUser: 'test',
+        toUser: 'test',
         type: 'text',
-        text: 'd'
+        content: 'd'
       };
 
+      var xml = support.buildXML(info);
+      var data = support.postData(cfg.token, cryptor.encrypt(xml));
       request(app)
-      .post('/wechat' + tail())
-      .send(template(info))
+      .post('/wechat?' + data.querystring)
+      .send(data.xml)
       .expect(200)
-      .end(function(err, res){
+      .end(function (err, res) {
         if (err) return done(err);
         var body = res.text.toString();
-        body.should.include('<Content><![CDATA[hehe]]></Content>');
-        done();
+        support.parse(body, function (err, result) {
+          var message = cryptor.decrypt(result.Encrypt).message;
+          expect(message).to.contain('<Content><![CDATA[hehe]]></Content>');
+          done();
+        });
       });
     });
 
     it('should reply 500 when undefined list', function (done) {
       var info = {
-        sp: 'nvshen',
-        user: 'diaosi',
+        fromUser: 'test',
+        toUser: 'test',
         type: 'text',
-        text: 'undefinedlist'
+        content: 'undefinedlist'
       };
 
+      var xml = support.buildXML(info);
+      var data = support.postData(cfg.token, cryptor.encrypt(xml));
       request(app)
-      .post('/wechat' + tail())
-      .send(template(info))
+      .post('/wechat?' + data.querystring)
+      .send(data.xml)
       .expect(500)
       .end(function(err, res){
         if (err) return done(err);
         var body = res.text.toString();
-        body.should.include('UndefinedListError');
+        expect(body).to.be.contain('UndefinedListError');
         done();
       });
     });
 
     it('should reply 500 when undefined list', function (done) {
       var info = {
-        sp: 'nvshen',
-        user: 'diaosi',
+        fromUser: 'test',
+        toUser: 'test',
         type: 'text',
-        text: 'nowait'
+        content: 'nowait'
       };
 
+      var xml = support.buildXML(info);
+      var data = support.postData(cfg.token, cryptor.encrypt(xml));
       request(app)
-      .post('/wechat' + tail())
-      .send(template(info))
+      .post('/wechat?' + data.querystring)
+      .send(data.xml)
       .expect(200)
-      .end(function(err, res){
+      .end(function (err, res) {
         if (err) return done(err);
         var body = res.text.toString();
-        body.should.include('thanks');
-        done();
+        support.parse(body, function (err, result) {
+          var message = cryptor.decrypt(result.Encrypt).message;
+          expect(message).to.contain('<Content><![CDATA[thanks]]></Content>');
+          done();
+        });
       });
     });
   });

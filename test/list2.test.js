@@ -27,6 +27,8 @@ app.use('/wechat', wechat(config, function (req, res, next) {
 
 describe('list', function() {
   it('should ok with list', function (done) {
+    var cryptor = new WXBizMsgCrypt(cfg.token, cfg.encodingAESKey, cfg.corpid);
+
     List.add('view', [
       ['回复{c}查看我的性取向', '这样的事情怎么好意思告诉你啦- -']
     ]);
@@ -36,7 +38,7 @@ describe('list', function() {
       type: 'text',
       content: 'list'
     };
-    var cryptor = new WXBizMsgCrypt(cfg.token, cfg.encodingAESKey, cfg.corpid);
+
     var xml = buildXML(info);
     var data = postData(cfg.token, cryptor.encrypt(xml));
     request(app)
