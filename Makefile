@@ -1,6 +1,6 @@
-TESTS = test/*.js
+TESTS = test/*.test.js
 REPORTER = spec
-TIMEOUT = 20000
+TIMEOUT = 2000
 ISTANBUL = ./node_modules/.bin/istanbul
 MOCHA = ./node_modules/mocha/bin/_mocha
 COVERALLS = ./node_modules/coveralls/bin/coveralls.js

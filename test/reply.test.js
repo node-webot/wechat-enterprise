@@ -1,23 +1,22 @@
-require('should');
+var expect = require('expect.js');
 var reply = require('../').reply;
-var reply2CustomerService = require('../').reply2CustomerService;
 
 describe('wechat.js', function () {
   describe('reply text', function () {
     it('reply("text") should ok', function () {
       var result = reply('hello world', 'from', 'to');
-      result.should.be.include('<Content><![CDATA[hello world]]></Content>');
-      result.should.be.include('<MsgType><![CDATA[text]]></MsgType>');
-      result.should.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
-      result.should.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
+      expect(result).to.be.include('<Content><![CDATA[hello world]]></Content>');
+      expect(result).to.be.include('<MsgType><![CDATA[text]]></MsgType>');
+      expect(result).to.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
+      expect(result).to.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
     });
 
     it('reply({type: "text", content: content}) should ok', function () {
       var result = reply({type: 'text', content: 'hello world'}, 'from', 'to');
-      result.should.be.include('<Content><![CDATA[hello world]]></Content>');
-      result.should.be.include('<MsgType><![CDATA[text]]></MsgType>');
-      result.should.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
-      result.should.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
+      expect(result).to.be.include('<Content><![CDATA[hello world]]></Content>');
+      expect(result).to.be.include('<MsgType><![CDATA[text]]></MsgType>');
+      expect(result).to.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
+      expect(result).to.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
     });
   });
 
@@ -29,13 +28,13 @@ describe('wechat.js', function () {
         musicUrl: "http://mp3.com/xx.mp3",
         hqMusicUrl: "http://mp3.com/xx.mp3"
       }, 'from', 'to');
-      result.should.be.include('<Title><![CDATA[来段音乐吧]]></Title>');
-      result.should.be.include('<MsgType><![CDATA[music]]></MsgType>');
-      result.should.be.include('<Description><![CDATA[一无所有]]></Description>');
-      result.should.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
-      result.should.be.include('<MusicUrl><![CDATA[http://mp3.com/xx.mp3]]></MusicUrl>');
-      result.should.be.include('<HQMusicUrl><![CDATA[http://mp3.com/xx.mp3]]></HQMusicUrl>');
-      result.should.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
+      expect(result).to.be.include('<Title><![CDATA[来段音乐吧]]></Title>');
+      expect(result).to.be.include('<MsgType><![CDATA[music]]></MsgType>');
+      expect(result).to.be.include('<Description><![CDATA[一无所有]]></Description>');
+      expect(result).to.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
+      expect(result).to.be.include('<MusicUrl><![CDATA[http://mp3.com/xx.mp3]]></MusicUrl>');
+      expect(result).to.be.include('<HQMusicUrl><![CDATA[http://mp3.com/xx.mp3]]></HQMusicUrl>');
+      expect(result).to.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
     });
 
     it('reply(object) with type should ok', function () {
@@ -48,13 +47,13 @@ describe('wechat.js', function () {
           hqMusicUrl: "http://mp3.com/xx.mp3"
         }
       }, 'from', 'to');
-      result.should.be.include('<Title><![CDATA[来段音乐吧]]></Title>');
-      result.should.be.include('<MsgType><![CDATA[music]]></MsgType>');
-      result.should.be.include('<Description><![CDATA[一无所有]]></Description>');
-      result.should.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
-      result.should.be.include('<MusicUrl><![CDATA[http://mp3.com/xx.mp3]]></MusicUrl>');
-      result.should.be.include('<HQMusicUrl><![CDATA[http://mp3.com/xx.mp3]]></HQMusicUrl>');
-      result.should.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
+      expect(result).to.be.include('<Title><![CDATA[来段音乐吧]]></Title>');
+      expect(result).to.be.include('<MsgType><![CDATA[music]]></MsgType>');
+      expect(result).to.be.include('<Description><![CDATA[一无所有]]></Description>');
+      expect(result).to.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
+      expect(result).to.be.include('<MusicUrl><![CDATA[http://mp3.com/xx.mp3]]></MusicUrl>');
+      expect(result).to.be.include('<HQMusicUrl><![CDATA[http://mp3.com/xx.mp3]]></HQMusicUrl>');
+      expect(result).to.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
     });
   });
 
@@ -70,26 +69,26 @@ describe('wechat.js', function () {
 
     it('reply(Array) should ok', function () {
       var result = reply(news, 'from', 'to');
-      result.should.be.include('<ArticleCount>1</ArticleCount>');
-      result.should.be.include('<Title><![CDATA[你来我家接我吧]]></Title>');
-      result.should.be.include('<Description><![CDATA[这是女神与高富帅之间的对话]]></Description>');
-      result.should.be.include('<PicUrl><![CDATA[http://nodeapi.cloudfoundry.com/qrcode.jpg]]></PicUrl>');
-      result.should.be.include('<Url><![CDATA[http://nodeapi.cloudfoundry.com/]]></Url>');
-      result.should.be.include('<MsgType><![CDATA[news]]></MsgType>');
-      result.should.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
-      result.should.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
+      expect(result).to.be.include('<ArticleCount>1</ArticleCount>');
+      expect(result).to.be.include('<Title><![CDATA[你来我家接我吧]]></Title>');
+      expect(result).to.be.include('<Description><![CDATA[这是女神与高富帅之间的对话]]></Description>');
+      expect(result).to.be.include('<PicUrl><![CDATA[http://nodeapi.cloudfoundry.com/qrcode.jpg]]></PicUrl>');
+      expect(result).to.be.include('<Url><![CDATA[http://nodeapi.cloudfoundry.com/]]></Url>');
+      expect(result).to.be.include('<MsgType><![CDATA[news]]></MsgType>');
+      expect(result).to.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
+      expect(result).to.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
     });
 
     it('reply({type: "news", content: news}) should ok', function () {
       var result = reply({type: 'news', content: news}, 'from', 'to');
-      result.should.be.include('<ArticleCount>1</ArticleCount>');
-      result.should.be.include('<Title><![CDATA[你来我家接我吧]]></Title>');
-      result.should.be.include('<Description><![CDATA[这是女神与高富帅之间的对话]]></Description>');
-      result.should.be.include('<PicUrl><![CDATA[http://nodeapi.cloudfoundry.com/qrcode.jpg]]></PicUrl>');
-      result.should.be.include('<Url><![CDATA[http://nodeapi.cloudfoundry.com/]]></Url>');
-      result.should.be.include('<MsgType><![CDATA[news]]></MsgType>');
-      result.should.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
-      result.should.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
+      expect(result).to.be.include('<ArticleCount>1</ArticleCount>');
+      expect(result).to.be.include('<Title><![CDATA[你来我家接我吧]]></Title>');
+      expect(result).to.be.include('<Description><![CDATA[这是女神与高富帅之间的对话]]></Description>');
+      expect(result).to.be.include('<PicUrl><![CDATA[http://nodeapi.cloudfoundry.com/qrcode.jpg]]></PicUrl>');
+      expect(result).to.be.include('<Url><![CDATA[http://nodeapi.cloudfoundry.com/]]></Url>');
+      expect(result).to.be.include('<MsgType><![CDATA[news]]></MsgType>');
+      expect(result).to.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
+      expect(result).to.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
     });
   });
 
@@ -100,10 +99,10 @@ describe('wechat.js', function () {
 
     it('reply({type: "image", content: image}) should ok', function () {
       var result = reply({type: 'image', content: image}, 'from', 'to');
-      result.should.be.include('<Image><MediaId><![CDATA[mediaId]]></MediaId></Image>');
-      result.should.be.include('<MsgType><![CDATA[image]]></MsgType>');
-      result.should.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
-      result.should.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
+      expect(result).to.be.include('<Image><MediaId><![CDATA[mediaId]]></MediaId></Image>');
+      expect(result).to.be.include('<MsgType><![CDATA[image]]></MsgType>');
+      expect(result).to.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
+      expect(result).to.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
     });
   });
 
@@ -114,10 +113,10 @@ describe('wechat.js', function () {
 
     it('reply({type: "voice", content: voice}) should ok', function () {
       var result = reply({type: 'voice', content: voice}, 'from', 'to');
-      result.should.be.include('<Voice><MediaId><![CDATA[mediaId]]></MediaId></Voice>');
-      result.should.be.include('<MsgType><![CDATA[voice]]></MsgType>');
-      result.should.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
-      result.should.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
+      expect(result).to.be.include('<Voice><MediaId><![CDATA[mediaId]]></MediaId></Voice>');
+      expect(result).to.be.include('<MsgType><![CDATA[voice]]></MsgType>');
+      expect(result).to.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
+      expect(result).to.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
     });
   });
 
@@ -129,28 +128,10 @@ describe('wechat.js', function () {
 
     it('reply({type: "video", content: video}) should ok', function () {
       var result = reply({type: 'video', content: video}, 'from', 'to');
-      result.should.be.include('<Video><MediaId><![CDATA[mediaId]]></MediaId><Title><![CDATA[]]></Title><Description><![CDATA[]]></Description></Video>');
-      result.should.be.include('<MsgType><![CDATA[video]]></MsgType>');
-      result.should.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
-      result.should.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
-    });
-  });
-
-  describe('reply2CustomerService', function () {
-    it('reply2CustomerService', function () {
-      var result = reply2CustomerService('from', 'to');
-      result.should.be.include('<MsgType><![CDATA[transfer_customer_service]]></MsgType>');
-      result.should.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
-      result.should.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
-      result.should.be.not.include('<KfAccount>');
-    });
-
-    it('reply2CustomerService with kfAccount', function () {
-      var result = reply2CustomerService('from', 'to', 'kf');
-      result.should.be.include('<MsgType><![CDATA[transfer_customer_service]]></MsgType>');
-      result.should.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
-      result.should.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
-      result.should.be.include('<KfAccount><![CDATA[kf]]></KfAccount>');
+      expect(result).to.be.include('<Video><MediaId><![CDATA[mediaId]]></MediaId><Title><![CDATA[]]></Title><Description><![CDATA[]]></Description></Video>');
+      expect(result).to.be.include('<MsgType><![CDATA[video]]></MsgType>');
+      expect(result).to.be.include('<ToUserName><![CDATA[to]]></ToUserName>');
+      expect(result).to.be.include('<FromUserName><![CDATA[from]]></FromUserName>');
     });
   });
 });

@@ -1,4 +1,4 @@
-var should = require('should');
+var expect = require('expect.js');
 var List = require('../').List;
 
 describe('list.js', function () {
@@ -10,10 +10,10 @@ describe('list.js', function () {
     ];
     List.add('common', common);
     var list = List.get('common');
-    list.description.should.be.equal('选择a查看啥\n选择b查看啥\n选择c查看啥');
-    list.get('a').should.be.equal(common[0][1]);
-    list.get('b').should.be.equal(common[1][1]);
-    list.get('c').should.be.equal(common[2][1]);
+    expect(list.description).to.be('选择a查看啥\n选择b查看啥\n选择c查看啥');
+    expect(list.get('a')).to.be(common[0][1]);
+    expect(list.get('b')).to.be(common[1][1]);
+    expect(list.get('c')).to.be(common[2][1]);
   });
 
   it('should ok when clear', function () {
@@ -24,10 +24,10 @@ describe('list.js', function () {
     ];
     List.add('common', common);
     var list = List.get('common');
-    should.exist(list);
+    expect(list).to.be.ok();
     List.clear();
     list = List.get('common');
-    should.not.exist(list);
+    expect(list).to.not.be.ok();
   });
 
   it('should ok with string', function () {
@@ -39,9 +39,9 @@ describe('list.js', function () {
     ];
     List.add('welcome', common);
     var list = List.get('welcome');
-    list.description.should.be.equal('welcome\n选择a查看啥\n选择b查看啥\n选择c查看啥');
-    list.get('a').should.be.equal(common[1][1]);
-    list.get('b').should.be.equal(common[2][1]);
-    list.get('c').should.be.equal(common[3][1]);
+    expect(list.description).to.be('welcome\n选择a查看啥\n选择b查看啥\n选择c查看啥');
+    expect(list.get('a')).to.be(common[1][1]);
+    expect(list.get('b')).to.be(common[2][1]);
+    expect(list.get('c')).to.be(common[3][1]);
   });
 });

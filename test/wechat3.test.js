@@ -4,11 +4,17 @@ var querystring = require('querystring');
 var request = require('supertest');
 var template = require('./support').template;
 var tail = require('./support').tail;
-require('should');
 
 var app = connect();
 app.use(connect.query());
-app.use('/wechat', wechat('some token').text(function (message, req, res, next) {
+
+var token = 'WMzxFqFFVKcIwOrDn7Ke5eTBA2LER';
+var encodingAESKey = 'NDhmYjU2ZWIxMGZmZWIxM2ZjMGVmNTUxYmJjYTNiMWI';
+var corpid = 'wx20d578aedfdf58fa';
+
+var config = {encodingAESKey: encodingAESKey, token: token, corpId: corpid};
+
+app.use('/wechat', wechat(config).text(function (message, req, res, next) {
   // 微信输入信息都在message上
   // 回复屌丝(普通回复)
   if (message.FromUserName === 'diaosi') {

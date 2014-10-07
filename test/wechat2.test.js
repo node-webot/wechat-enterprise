@@ -3,7 +3,14 @@ var wechat = require('../');
 
 var app = connect();
 app.use(connect.query());
-app.use('/wechat', wechat('some token', wechat.text(function (message, req, res, next) {
+
+var token = 'WMzxFqFFVKcIwOrDn7Ke5eTBA2LER';
+var encodingAESKey = 'NDhmYjU2ZWIxMGZmZWIxM2ZjMGVmNTUxYmJjYTNiMWI';
+var corpid = 'wx20d578aedfdf58fa';
+
+var config = {encodingAESKey: encodingAESKey, token: token, corpId: corpid};
+
+app.use('/wechat', wechat(config, wechat.text(function (message, req, res, next) {
   // 微信输入信息都在message上
   // 回复屌丝(普通回复)
   if (message.FromUserName === 'diaosi') {
@@ -37,8 +44,6 @@ app.use('/wechat', wechat('some token', wechat.text(function (message, req, res,
 }).event(function (message, req, res, next) {
   res.reply('event');
 })));
-
-require('should');
 
 var querystring = require('querystring');
 var request = require('supertest');

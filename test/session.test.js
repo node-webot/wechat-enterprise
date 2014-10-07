@@ -1,5 +1,3 @@
-require('should');
-
 var request = require('supertest');
 var template = require('./support').template;
 var tail = require('./support').tail;
@@ -11,7 +9,14 @@ var app = connect();
 app.use(connect.query());
 app.use(connect.cookieParser());
 app.use(connect.session({secret: 'keyboard cat', cookie: {maxAge: 60000}}));
-app.use('/wechat', wechat('some token', wechat.text(function (info, req, res, next) {
+
+var token = 'WMzxFqFFVKcIwOrDn7Ke5eTBA2LER';
+var encodingAESKey = 'NDhmYjU2ZWIxMGZmZWIxM2ZjMGVmNTUxYmJjYTNiMWI';
+var corpid = 'wx20d578aedfdf58fa';
+
+var config = {encodingAESKey: encodingAESKey, token: token, corpId: corpid};
+
+app.use('/wechat', wechat(config, wechat.text(function (info, req, res, next) {
   if (info.Content === '=') {
     req.wxsession.text = req.wxsession.text || [];
     var exp = req.wxsession.text.join('');

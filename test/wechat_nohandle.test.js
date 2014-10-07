@@ -1,5 +1,3 @@
-require('should');
-
 var request = require('supertest');
 var template = require('./support').template;
 var tail = require('./support').tail;
@@ -9,7 +7,14 @@ var wechat = require('../');
 
 var app = connect();
 app.use(connect.query());
-app.use('/wechat', wechat('some token', wechat.text(function (message, req, res, next) {
+
+var token = 'WMzxFqFFVKcIwOrDn7Ke5eTBA2LER';
+var encodingAESKey = 'NDhmYjU2ZWIxMGZmZWIxM2ZjMGVmNTUxYmJjYTNiMWI';
+var corpid = 'wx20d578aedfdf58fa';
+
+var config = {encodingAESKey: encodingAESKey, token: token, corpId: corpid};
+
+app.use('/wechat', wechat(config, wechat.text(function (message, req, res, next) {
   res.end('hehe');
 })));
 app.use('/wechat', function (req, res, next) {

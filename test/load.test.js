@@ -1,8 +1,8 @@
 var rewire = require('rewire');
-var wechat = rewire('../lib/wechat');
+var wechat = rewire('../lib/wechat-enterprise');
 var Readable = require('stream').Readable;
 var util = require('util');
-var should = require('should');
+var expect = require('expect.js');
 
 function Counter(opt) {
   Readable.call(this, opt);
@@ -11,13 +11,13 @@ util.inherits(Counter, Readable);
 
 Counter.prototype._read = function() {};
 
-var getMessage = wechat.__get__('getMessage');
+var load = wechat.__get__('load');
 
-describe('getMessage', function () {
+describe('load', function () {
   it('should not error', function (done) {
     var stream = new Counter();
-    getMessage(stream, function (err, xml) {
-      should.not.exist(err);
+    load(stream, function (err, xml) {
+      expect(err).to.not.be.ok();
       done();
     });
     stream.push(new Buffer('<xml>'));
@@ -27,8 +27,8 @@ describe('getMessage', function () {
 
   it('should exist error', function (done) {
     var stream = new Counter();
-    getMessage(stream, function (err, xml) {
-      should.exist(err);
+    load(stream, function (err, xml) {
+      expect(err).to.be.ok();
       done();
     });
     stream.emit('error', new Error('some error'));
