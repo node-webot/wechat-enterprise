@@ -50,7 +50,7 @@ var request = require('supertest');
 var template = require('./support').template;
 var tail = require('./support').tail;
 
-describe('wechat.js 0.2.0', function () {
+xdescribe('wechat.js 0.2.0', function () {
 
   describe('valid GET', function () {
     it('should 401', function (done) {

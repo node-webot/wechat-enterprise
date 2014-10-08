@@ -34,11 +34,6 @@ describe('lib/msg_crypto.js', function () {
     // expect(decrypted.corpIdFromXml).to.be(config.corpid);
   });
 
-  it('getRandomString should ok', function () {
-    var getRandomString = rewire('../lib/msg_crypto').__get__('getRandomString');
-    expect(getRandomString(10).length).to.be(10);
-  });
-
   describe('PKCS7Encoder', function () {
     var PKCS7Encoder = rewire('../lib/msg_crypto').__get__('PKCS7Encoder');
 

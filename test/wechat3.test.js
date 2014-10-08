@@ -49,7 +49,7 @@ app.use('/wechat', wechat(config).text(function (message, req, res, next) {
   res.reply('event');
 }).middlewarify());
 
-describe('wechat.js 0.3.0', function () {
+xdescribe('wechat.js 0.3.0', function () {
 
   describe('valid GET', function () {
     it('should 401', function (done) {

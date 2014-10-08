@@ -21,7 +21,7 @@ app.use('/wechat', function (req, res, next) {
   res.end('next');
 });
 
-describe('no handler', function () {
+xdescribe('no handler', function () {
   describe('respond', function () {
     it('should ok', function (done) {
       var info = {
