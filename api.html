@@ -1,0 +1,2611 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>wechat-enterprise Documentation</title>
+    <meta name="keywords" content="weixin,wechat,enterprise" />
+    <meta name="description" content="微信公共平台企业号版本Node库" />
+    <script src="assets/prettify.js"></script>
+    <script src="assets/jquery-1.8.2.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/base.css" />
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="./index.html">wechat-enterprise</a>
+        </div>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+          
+            <li>
+              <a href="./api.html">API Docs</a>
+            </li>
+          
+            <li>
+              <a href="./Getting start.html">Getting start</a>
+            </li>
+          
+          
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div>
+    </nav>
+    <header class="jumbotron subhead">
+      <div class="container">
+        <h1>wechat-enterprise <small>Version: 0.0.1 By @Jackson Tian</small></h1>
+        <p class="lead">
+          微信公共平台企业号版本Node库
+        </p>
+      </div>
+    </header>
+
+<div class="container content">
+  <div class="row">
+    <div class="col-md-3 bs-docs-sidebar">
+      <ul class="nav nav-list bs-docs-sidenav affix">
+
+  <li>
+    <a href="#api_api_common"><i class="icon-chevron-right"></i>api_common</a>
+  </li>
+
+  <li>
+    <a href="#api_api_department"><i class="icon-chevron-right"></i>api_department</a>
+  </li>
+
+  <li>
+    <a href="#api_api_media"><i class="icon-chevron-right"></i>api_media</a>
+  </li>
+
+  <li>
+    <a href="#api_api_menu"><i class="icon-chevron-right"></i>api_menu</a>
+  </li>
+
+  <li>
+    <a href="#api_api_message"><i class="icon-chevron-right"></i>api_message</a>
+  </li>
+
+  <li>
+    <a href="#api_api_tag"><i class="icon-chevron-right"></i>api_tag</a>
+  </li>
+
+  <li>
+    <a href="#api_api_user"><i class="icon-chevron-right"></i>api_user</a>
+  </li>
+
+  <li>
+    <a href="#api_list"><i class="icon-chevron-right"></i>list</a>
+  </li>
+
+  <li>
+    <a href="#api_msg_crypto"><i class="icon-chevron-right"></i>msg_crypto</a>
+  </li>
+
+  <li>
+    <a href="#api_session"><i class="icon-chevron-right"></i>session</a>
+  </li>
+
+  <li>
+    <a href="#api_util"><i class="icon-chevron-right"></i>util</a>
+  </li>
+
+  <li>
+    <a href="#api_wechat-enterprise"><i class="icon-chevron-right"></i>wechat-enterprise</a>
+  </li>
+
+</ul>
+
+    </div>
+    <div class="col-md-9">
+      
+        <section id="api_api_common" class="api">
+  <h2>api_common: API索引</h2>
+  <ul class="indexs">
+  
+    <li>
+      <a href="#api_common__API">API</a>
+    </li>
+
+    <li>
+      <a href="#api_common__getLatestToken">getLatestToken</a>
+    </li>
+
+    <li>
+      <a href="#api_common_API_mixin">mixin</a>
+    </li>
+
+  </ul>
+  <hr />
+
+  
+  <h3 data-id="api_common__API">
+    API
+  </h3>
+  
+
+  <p>根据appid和appsecret创建API的构造函数<br />如需跨进程跨机器进行操作Wechat API（依赖access token），access token需要进行全局维护<br />使用策略如下：</p><ol>
+<li>调用用户传入的获取token的异步方法，获得token之后使用</li>
+<li>使用appid/appsecret获取token。并调用用户传入的保存token方法保存</li>
+</ol>
+<p>Tips:</p><ul>
+<li>如果跨机器运行wechat模块，需要注意同步机器之间的系统时间。</li>
+</ul>
+<p>Examples:</p><pre><code>var API = require(&#39;wechat&#39;).API;
+var api = new API(&#39;appid&#39;, &#39;secret&#39;);
+</code></pre><p>以上即可满足单进程使用。<br />当多进程时，token需要全局维护，以下为保存token的接口。</p><pre><code>var api = new API(&#39;corpid&#39;, &#39;secret&#39;, function (callback) {
+  // 传入一个获取全局token的方法
+  fs.readFile(&#39;access_token.txt&#39;, &#39;utf8&#39;, function (err, txt) {
+    if (err) {return callback(err);}
+    callback(null, JSON.parse(txt));
+  });
+}, function (token, callback) {
+  // 请将token存储到全局，跨进程、跨机器级别的全局，比如写到数据库、redis等
+  // 这样才能在cluster模式及多机情况下使用，以下为写入到文件的示例
+  fs.writeFile(&#39;access_token.txt&#39;, JSON.stringify(token), callback);
+});
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>函数</td>
+      <td>API()</td> 
+      <td></td>
+      <td>API</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>corpid(String)</td>
+      <td colspan="2">在公众平台上申请得到的corpid</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>corpsecret(String)</td>
+      <td colspan="2">在公众平台上申请得到的app secret</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>agentid(String)</td>
+      <td colspan="2">企业应用的id</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>getToken(Function)</td>
+      <td colspan="2">可选的。获取全局token对象的方法，多进程模式部署时需在意</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>saveToken(Function)</td>
+      <td colspan="2">可选的。保存全局token对象的方法，多进程模式部署时需在意</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_common__getLatestToken">
+    getLatestToken
+  </h3>
+  
+
+  <p>获取最新的token</p><p>Examples:</p><pre><code>api.getLatestToken(callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 获取access token出现异常时的异常对象</li>
+<li><code>token</code>, 获取的token</li>
+</ul>
+
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>API.prototype.getLatestToken()</td> 
+      <td></td>
+      <td>getLatestToken</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>method(Function)</td>
+      <td colspan="2">需要封装的方法</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>args(Array)</td>
+      <td colspan="2">方法需要的参数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_common_API_mixin">
+    mixin
+  </h3>
+  
+
+  <p>用于支持对象合并。将对象合并到API.prototype上，使得能够支持扩展<br />Examples:</p><pre><code>// 媒体管理（上传、下载）
+API.mixin(require(&#39;./lib/api_media&#39;));
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>API.mixin()</td> 
+      <td>API</td>
+      <td>mixin</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>obj(Object)</td>
+      <td colspan="2">要合并的对象</td>
+    </tr>
+  
+
+  
+  </table>
+  
+</section>
+
+      
+        <section id="api_api_department" class="api">
+  <h2>api_department: API索引</h2>
+  <ul class="indexs">
+  
+    <li>
+      <a href="#api_department__urllib">urllib</a>
+    </li>
+
+    <li>
+      <a href="#api_department_exports_createDepartment">createDepartment</a>
+    </li>
+
+    <li>
+      <a href="#api_department_exports_updateDepartment">updateDepartment</a>
+    </li>
+
+    <li>
+      <a href="#api_department_exports_deleteDepartment">deleteDepartment</a>
+    </li>
+
+    <li>
+      <a href="#api_department_exports_getDepartments">getDepartments</a>
+    </li>
+
+  </ul>
+  <hr />
+
+  
+  <h3 data-id="api_department__urllib">
+    urllib
+  </h3>
+  
+
+  <p>详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=管理部门">http://qydev.weixin.qq.com/wiki/index.php?title=管理部门</a></p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>声明</td>
+      <td>urllib</td> 
+      <td></td>
+      <td>urllib</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_department_exports_createDepartment">
+    createDepartment
+  </h3>
+  
+
+  <p>创建部门</p><pre><code>Examples:
+</code></pre><p>api.createDepartment(name, id, callback);</p><pre><code>Callback:
+
+- `err`, 调用失败时得到的异常
+- `result`, 调用正常时得到的对象
+
+Result:
+</code></pre><p>{<br /> &quot;errcode&quot;: 0,<br /> &quot;errmsg&quot;: &quot;created&quot;,<br /> &quot;id&quot;: 2<br />}<br />```</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.createDepartment()</td> 
+      <td>exports</td>
+      <td>createDepartment</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>name(String)</td>
+      <td colspan="2">部门名字</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>parentid(Number)</td>
+      <td colspan="2">上级部门ID</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_department_exports_updateDepartment">
+    updateDepartment
+  </h3>
+  
+
+  <p>更新部门</p><p>Examples:</p><pre><code>api.updateDepartment(id, name, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+ &quot;errcode&quot;: 0,
+ &quot;errmsg&quot;: &quot;updated&quot;
+}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.updateDepartment()</td> 
+      <td>exports</td>
+      <td>updateDepartment</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>id(Number)</td>
+      <td colspan="2">部门ID</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>name(String)</td>
+      <td colspan="2">部门新名字</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_department_exports_deleteDepartment">
+    deleteDepartment
+  </h3>
+  
+
+  <p>删除部门</p><p>Examples:</p><pre><code>api.deleteDepartment(id, callback);
+api.deleteDepartment([id1, id2], callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+ &quot;errcode&quot;: 0,
+ &quot;errmsg&quot;: &quot;deleted&quot;
+}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.deleteDepartment()</td> 
+      <td>exports</td>
+      <td>deleteDepartment</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>id(Number,Array)</td>
+      <td colspan="2">部门ID</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_department_exports_getDepartments">
+    getDepartments
+  </h3>
+  
+
+  <p>查看所有部门</p><p>Examples:</p><pre><code>api.getDepartments(callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+ &quot;errcode&quot;: 0,
+ &quot;errmsg&quot;: &quot;ok&quot;,
+ &quot;department&quot;: [
+   {
+     &quot;id&quot;: 1,
+     &quot;name&quot;: &quot;广州研发中心&quot;,
+     &quot;parentid&quot;: 0
+   },
+   {
+     &quot;id&quot;: 2
+     &quot;name&quot;: &quot;邮箱产品部&quot;,
+     &quot;parentid&quot;: 1
+   }
+ ]
+}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.getDepartments()</td> 
+      <td>exports</td>
+      <td>getDepartments</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+</section>
+
+      
+        <section id="api_api_media" class="api">
+  <h2>api_media: API索引</h2>
+  <ul class="indexs">
+  
+    <li>
+      <a href="#api_media_exports_uploadMedia">uploadMedia</a>
+    </li>
+
+    <li>
+      <a href="#api_media_exports_getMedia">getMedia</a>
+    </li>
+
+  </ul>
+  <hr />
+
+  
+  <h3 data-id="api_media_exports_uploadMedia">
+    uploadMedia
+  </h3>
+  
+
+  <p>上传多媒体文件，分别有图片（image）、语音（voice）、视频（video）和普通文件（file）<br />详情请见：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=上传媒体文件">http://qydev.weixin.qq.com/wiki/index.php?title=上传媒体文件</a><br />Examples:</p><pre><code>api.uploadMedia(&#39;filepath&#39;, type, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{&quot;type&quot;:&quot;image&quot;,&quot;media_id&quot;:&quot;0000001&quot;,&quot;created_at&quot;:123456789}
+</code></pre><p>Shortcut:</p><ul>
+<li><code>exports.uploadImage(filepath, callback);</code></li>
+<li><code>exports.uploadVoice(filepath, callback);</code></li>
+<li><code>exports.uploadVideo(filepath, callback);</code></li>
+<li><code>exports.uploadFile(filepath, callback);</code></li>
+</ul>
+
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.uploadMedia()</td> 
+      <td>exports</td>
+      <td>uploadMedia</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>filepath(String)</td>
+      <td colspan="2">文件路径</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>type(String)</td>
+      <td colspan="2">媒体类型，可用值有image、voice、video、file</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_media_exports_getMedia">
+    getMedia
+  </h3>
+  
+
+  <p>根据媒体ID获取媒体内容<br />详情请见：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=获取媒体文件">http://qydev.weixin.qq.com/wiki/index.php?title=获取媒体文件</a><br />Examples:</p><pre><code>api.getMedia(&#39;media_id&#39;, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的文件Buffer对象</li>
+<li><code>res</code>, HTTP响应对象</li>
+</ul>
+
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.getMedia()</td> 
+      <td>exports</td>
+      <td>getMedia</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>mediaId(String)</td>
+      <td colspan="2">媒体文件的ID</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+</section>
+
+      
+        <section id="api_api_menu" class="api">
+  <h2>api_menu: API索引</h2>
+  <ul class="indexs">
+  
+    <li>
+      <a href="#api_menu_exports_createMenu">createMenu</a>
+    </li>
+
+    <li>
+      <a href="#api_menu_exports_getMenu">getMenu</a>
+    </li>
+
+    <li>
+      <a href="#api_menu_exports_removeMenu">removeMenu</a>
+    </li>
+
+  </ul>
+  <hr />
+
+  
+  <h3 data-id="api_menu_exports_createMenu">
+    createMenu
+  </h3>
+  
+
+  <p>创建自定义菜单<br />详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=创建应用菜单">http://qydev.weixin.qq.com/wiki/index.php?title=创建应用菜单</a></p><p>Menu:</p><pre><code>{
+ &quot;button&quot;:[
+   {
+     &quot;type&quot;:&quot;click&quot;,
+     &quot;name&quot;:&quot;今日歌曲&quot;,
+     &quot;key&quot;:&quot;V1001_TODAY_MUSIC&quot;
+   },
+   {
+     &quot;name&quot;:&quot;菜单&quot;,
+     &quot;sub_button&quot;:[
+       {
+         &quot;type&quot;:&quot;view&quot;,
+         &quot;name&quot;:&quot;搜索&quot;,
+         &quot;url&quot;:&quot;http://www.soso.com/&quot;
+       },
+       {
+         &quot;type&quot;:&quot;click&quot;,
+         &quot;name&quot;:&quot;赞一下我们&quot;,
+         &quot;key&quot;:&quot;V1001_GOOD&quot;
+       }]
+     }]
+   }
+ ]
+}
+</code></pre><p>Examples:</p><pre><code>api.createMenu(menu, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{&quot;errcode&quot;:0,&quot;errmsg&quot;:&quot;ok&quot;}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.createMenu()</td> 
+      <td>exports</td>
+      <td>createMenu</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>menu(Object)</td>
+      <td colspan="2">菜单对象</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_menu_exports_getMenu">
+    getMenu
+  </h3>
+  
+
+  <p>获取菜单<br />详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=获取菜单列表">http://qydev.weixin.qq.com/wiki/index.php?title=获取菜单列表</a></p><p>Examples:</p><pre><code>api.getMenu(agentId, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>// 结果示例
+{
+ &quot;menu&quot;: {
+   &quot;button&quot;:[
+     {&quot;type&quot;:&quot;click&quot;,&quot;name&quot;:&quot;今日歌曲&quot;,&quot;key&quot;:&quot;V1001_TODAY_MUSIC&quot;,&quot;sub_button&quot;:[]},
+     {&quot;type&quot;:&quot;click&quot;,&quot;name&quot;:&quot;歌手简介&quot;,&quot;key&quot;:&quot;V1001_TODAY_SINGER&quot;,&quot;sub_button&quot;:[]},
+     {&quot;name&quot;:&quot;菜单&quot;,&quot;sub_button&quot;:[
+       {&quot;type&quot;:&quot;view&quot;,&quot;name&quot;:&quot;搜索&quot;,&quot;url&quot;:&quot;http://www.soso.com/&quot;,&quot;sub_button&quot;:[]},
+       {&quot;type&quot;:&quot;view&quot;,&quot;name&quot;:&quot;视频&quot;,&quot;url&quot;:&quot;http://v.qq.com/&quot;,&quot;sub_button&quot;:[]},
+       {&quot;type&quot;:&quot;click&quot;,&quot;name&quot;:&quot;赞一下我们&quot;,&quot;key&quot;:&quot;V1001_GOOD&quot;,&quot;sub_button&quot;:[]}]
+     }
+   ]
+ }
+}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.getMenu()</td> 
+      <td>exports</td>
+      <td>getMenu</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_menu_exports_removeMenu">
+    removeMenu
+  </h3>
+  
+
+  <p>删除自定义菜单<br />详细请看：<a href="http://mp.weixin.qq.com/wiki/index.php?title=自定义菜单删除接口">http://mp.weixin.qq.com/wiki/index.php?title=自定义菜单删除接口</a><br />Examples:</p><pre><code>api.removeMenu(callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{&quot;errcode&quot;:0,&quot;errmsg&quot;:&quot;ok&quot;}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.removeMenu()</td> 
+      <td>exports</td>
+      <td>removeMenu</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+</section>
+
+      
+        <section id="api_api_message" class="api">
+  <h2>api_message: API索引</h2>
+  <ul class="indexs">
+  
+    <li>
+      <a href="#api_message__urllib">urllib</a>
+    </li>
+
+    <li>
+      <a href="#api_message_exports_send">send</a>
+    </li>
+
+  </ul>
+  <hr />
+
+  
+  <h3 data-id="api_message__urllib">
+    urllib
+  </h3>
+  
+
+  <p>详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=发送接口说明">http://qydev.weixin.qq.com/wiki/index.php?title=发送接口说明</a></p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>声明</td>
+      <td>urllib</td> 
+      <td></td>
+      <td>urllib</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_message_exports_send">
+    send
+  </h3>
+  
+
+  <p>发送消息分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）<br />Examples:</p><pre><code>api.send(to, message, callback);
+</code></pre><p>To:</p><pre><code>{
+ &quot;touser&quot;: &quot;UserID1|UserID2|UserID3&quot;,
+ &quot;toparty&quot;: &quot; PartyID1 | PartyID2 &quot;,
+ &quot;totag&quot;: &quot; TagID1 | TagID2 &quot;
+}
+</code></pre><p>Message:<br />文本消息：</p><pre><code>{
+ &quot;msgtype&quot;: &quot;text&quot;,
+ &quot;text&quot;: {
+   &quot;content&quot;: &quot;Holiday Request For Pony(http://xxxxx)&quot;
+ },
+ &quot;safe&quot;:&quot;0&quot;
+}
+</code></pre><p>图片消息：</p><pre><code>{
+ &quot;msgtype&quot;: &quot;image&quot;,
+ &quot;image&quot;: {
+   &quot;media_id&quot;: &quot;MEDIA_ID&quot;
+ },
+ &quot;safe&quot;:&quot;0&quot;
+}
+</code></pre><p>图片消息：</p><pre><code>{
+ &quot;msgtype&quot;: &quot;image&quot;,
+ &quot;image&quot;: {
+   &quot;media_id&quot;: &quot;MEDIA_ID&quot;
+ },
+ &quot;safe&quot;:&quot;0&quot;
+}
+</code></pre><p>语音消息：</p><pre><code>{
+ &quot;msgtype&quot;: &quot;voice&quot;,
+ &quot;voice&quot;: {
+   &quot;media_id&quot;: &quot;MEDIA_ID&quot;
+ },
+ &quot;safe&quot;:&quot;0&quot;
+}
+</code></pre><p>视频消息：</p><pre><code>{
+ &quot;msgtype&quot;: &quot;video&quot;,
+ &quot;video&quot;: {
+   &quot;media_id&quot;: &quot;MEDIA_ID&quot;
+   &quot;title&quot;: &quot;Title&quot;,
+   &quot;description&quot;: &quot;Description&quot;
+ },
+ &quot;safe&quot;:&quot;0&quot;
+}
+</code></pre><p>文件消息：</p><pre><code>{
+ &quot;msgtype&quot;: &quot;file&quot;,
+ &quot;file&quot;: {
+   &quot;media_id&quot;: &quot;MEDIA_ID&quot;
+ },
+ &quot;safe&quot;:&quot;0&quot;
+}
+</code></pre><p>图文消息：</p><pre><code>{
+ &quot;msgtype&quot;: &quot;news&quot;,
+ &quot;news&quot;: {
+   &quot;articles&quot;:[
+     {
+       &quot;title&quot;: &quot;Title&quot;,
+       &quot;description&quot;: &quot;Description&quot;,
+       &quot;url&quot;: &quot;URL&quot;,
+       &quot;picurl&quot;: &quot;PIC_URL&quot;,
+     },
+     {
+       &quot;title&quot;: &quot;Title&quot;,
+       &quot;description&quot;: &quot;Description&quot;,
+       &quot;url&quot;: &quot;URL&quot;,
+       &quot;picurl&quot;: &quot;PIC_URL&quot;,
+     }    
+   ]
+ },
+ &quot;safe&quot;:&quot;0&quot;
+}
+MP消息：
+</code></pre><p>{<br /> &quot;msgtype&quot;: &quot;mpnews&quot;,<br /> &quot;mpnews&quot;: {<br />   &quot;articles&quot;:[<br />     {<br />       &quot;thumb_media_id&quot;: &quot;id&quot;,<br />       &quot;author&quot;: &quot;Author&quot;,<br />       &quot;content_source_url&quot;: &quot;URL&quot;,<br />       &quot;content&quot;: &quot;Content&quot;<br />       &quot;digest&quot;: &quot;Digest description&quot;,<br />       &quot;show_cover_pic&quot;: &quot;0&quot;<br />     },<br />     {<br />       &quot;thumb_media_id&quot;: &quot;id&quot;,<br />       &quot;author&quot;: &quot;Author&quot;,<br />       &quot;content_source_url&quot;: &quot;URL&quot;,<br />       &quot;content&quot;: &quot;Content&quot;<br />       &quot;digest&quot;: &quot;Digest description&quot;,<br />       &quot;show_cover_pic&quot;: &quot;0&quot;<br />     }<br />   ],<br />   &quot;media_id&quot;: &quot;id&quot;<br /> },<br /> &quot;safe&quot;:&quot;0&quot;<br />}</p><pre><code>Callback:
+
+- `err`, 调用失败时得到的异常
+- `result`, 调用正常时得到的对象
+
+Result:
+</code></pre><p>{<br /> &quot;errcode&quot;: 0,<br /> &quot;errmsg&quot;: &quot;ok&quot;,<br /> &quot;invaliduser&quot;: &quot;UserID1&quot;,<br /> &quot;invalidparty&quot;:&quot;PartyID1&quot;,<br /> &quot;invalidtag&quot;:&quot;TagID1&quot;<br />}<br />```</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.send()</td> 
+      <td>exports</td>
+      <td>send</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>to(Object)</td>
+      <td colspan="2">接受消息的用户</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>message(Object)</td>
+      <td colspan="2">消息对象</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+</section>
+
+      
+        <section id="api_api_tag" class="api">
+  <h2>api_tag: API索引</h2>
+  <ul class="indexs">
+  
+    <li>
+      <a href="#api_tag__urllib">urllib</a>
+    </li>
+
+    <li>
+      <a href="#api_tag_exports_createTag">createTag</a>
+    </li>
+
+    <li>
+      <a href="#api_tag_exports_updateTagName">updateTagName</a>
+    </li>
+
+    <li>
+      <a href="#api_tag_exports_deleteTag">deleteTag</a>
+    </li>
+
+    <li>
+      <a href="#api_tag_exports_getTagUsers">getTagUsers</a>
+    </li>
+
+    <li>
+      <a href="#api_tag_exports_addTagUsers">addTagUsers</a>
+    </li>
+
+    <li>
+      <a href="#api_tag_exports_deleteTagUsers">deleteTagUsers</a>
+    </li>
+
+  </ul>
+  <hr />
+
+  
+  <h3 data-id="api_tag__urllib">
+    urllib
+  </h3>
+  
+
+  <p>详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=管理标签">http://qydev.weixin.qq.com/wiki/index.php?title=管理标签</a></p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>声明</td>
+      <td>urllib</td> 
+      <td></td>
+      <td>urllib</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_tag_exports_createTag">
+    createTag
+  </h3>
+  
+
+  <p>创建标签</p><pre><code>Examples:
+</code></pre><p>api.createTag(name, callback);</p><pre><code>
+Callback:
+
+- `err`, 调用失败时得到的异常
+- `result`, 调用正常时得到的对象
+
+Result:
+</code></pre><p>{<br /> &quot;errcode&quot;: 0,<br /> &quot;errmsg&quot;: &quot;created&quot;,<br /> &quot;tagid&quot;: &quot;1&quot;<br />}<br />```</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.createTag()</td> 
+      <td>exports</td>
+      <td>createTag</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>name(String)</td>
+      <td colspan="2">标签名字</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_tag_exports_updateTagName">
+    updateTagName
+  </h3>
+  
+
+  <p>更新标签名字</p><p>Examples:</p><pre><code>api.updateTagName(id, name, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+  &quot;errcode&quot;: 0,
+  &quot;errmsg&quot;: &quot;updated&quot;
+}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.updateTagName()</td> 
+      <td>exports</td>
+      <td>updateTagName</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>id(String)</td>
+      <td colspan="2">标签ID</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>name(String)</td>
+      <td colspan="2">标签名称。最长64个字符</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_tag_exports_deleteTag">
+    deleteTag
+  </h3>
+  
+
+  <p>删除标签</p><p>Examples:</p><pre><code>api.deleteTag(id, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+ &quot;errcode&quot;: 0,
+ &quot;errmsg&quot;: &quot;deleted&quot;
+}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.deleteTag()</td> 
+      <td>exports</td>
+      <td>deleteTag</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>id(Number)</td>
+      <td colspan="2">标签ID</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_tag_exports_getTagUsers">
+    getTagUsers
+  </h3>
+  
+
+  <p>获取标签成员</p><p>Examples:</p><pre><code>api.getTagUsers(id, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+  &quot;errcode&quot;: 0,
+  &quot;errmsg&quot;: &quot;ok&quot;,
+  &quot;userlist&quot;: [
+    {
+        &quot;userid&quot;: &quot;zhangsan&quot;,
+        &quot;name&quot;: &quot;李四&quot;
+    }
+  ]
+}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.getTagUsers()</td> 
+      <td>exports</td>
+      <td>getTagUsers</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>id(Number)</td>
+      <td colspan="2">标签ID</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_tag_exports_addTagUsers">
+    addTagUsers
+  </h3>
+  
+
+  <p>增加标签成员</p><p>Examples:</p><pre><code>api.addTagUsers(id, userIdList, callback);
+</code></pre><p>{<br />  &quot;tagid&quot;: &quot;1&quot;,<br />  &quot;userlist&quot;:[ &quot;user1&quot;,&quot;user2&quot;]<br />}</p><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>a)正确时返回
+{
+  &quot;errcode&quot;: 0,
+  &quot;errmsg&quot;: &quot;deleted&quot;
+}
+
+b)若部分userid非法，则返回
+{
+  &quot;errcode&quot;: 0,
+  &quot;errmsg&quot;: &quot;invalid userlist failed&quot;
+  &quot;invalidlist&quot;：&quot;usr1|usr2|usr&quot;
+}
+
+c)当包含的userid全部非法时返回
+{
+  &quot;errcode&quot;: 40031,
+  &quot;errmsg&quot;: &quot;all list invalid&quot;
+}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.addTagUsers()</td> 
+      <td>exports</td>
+      <td>addTagUsers</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>id(Number)</td>
+      <td colspan="2">标签ID</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_tag_exports_deleteTagUsers">
+    deleteTagUsers
+  </h3>
+  
+
+  <p>删除标签成员</p><p>Examples:</p><pre><code>api.deleteTagUsers(id, userIdList, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>a)正确时返回
+{
+  &quot;errcode&quot;: 0,
+  &quot;errmsg&quot;: &quot;deleted&quot;
+}
+
+b)若部分userid非法，则返回
+{
+  &quot;errcode&quot;: 0,
+  &quot;errmsg&quot;: &quot;invalid userlist failed&quot;
+  &quot;invalidlist&quot;：&quot;usr1|usr2|usr&quot;
+}
+
+c)当包含的userid全部非法时返回
+{
+  &quot;errcode&quot;: 40031,
+  &quot;errmsg&quot;: &quot;all list invalid&quot;
+}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.deleteTagUsers()</td> 
+      <td>exports</td>
+      <td>deleteTagUsers</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>id(Number)</td>
+      <td colspan="2">标签ID</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>userIdList(Array)</td>
+      <td colspan="2">用户ID数组</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+</section>
+
+      
+        <section id="api_api_user" class="api">
+  <h2>api_user: API索引</h2>
+  <ul class="indexs">
+  
+    <li>
+      <a href="#api_user__querystring">querystring</a>
+    </li>
+
+    <li>
+      <a href="#api_user_exports_createUser">createUser</a>
+    </li>
+
+    <li>
+      <a href="#api_user_exports_updateUser">updateUser</a>
+    </li>
+
+    <li>
+      <a href="#api_user_exports_deleteUser">deleteUser</a>
+    </li>
+
+    <li>
+      <a href="#api_user_exports_getUser">getUser</a>
+    </li>
+
+    <li>
+      <a href="#api_user_exports_getDepartmentUsers">getDepartmentUsers</a>
+    </li>
+
+    <li>
+      <a href="#api_user_exports_getUserIdByCode">getUserIdByCode</a>
+    </li>
+
+    <li>
+      <a href="#api_user_exports_getAuthorizeURL">getAuthorizeURL</a>
+    </li>
+
+  </ul>
+  <hr />
+
+  
+  <h3 data-id="api_user__querystring">
+    querystring
+  </h3>
+  
+
+  <p>详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=管理成员">http://qydev.weixin.qq.com/wiki/index.php?title=管理成员</a></p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>声明</td>
+      <td>querystring</td> 
+      <td></td>
+      <td>querystring</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_user_exports_createUser">
+    createUser
+  </h3>
+  
+
+  <p>创建成员</p><pre><code>Examples:
+</code></pre><p>api.createUser(user, callback);</p><pre><code>{
+  &quot;userid&quot;: &quot;zhangsan&quot;,
+  &quot;name&quot;: &quot;张三&quot;,
+  &quot;department&quot;: [1, 2],
+  &quot;position&quot;: &quot;产品经理&quot;,
+  &quot;mobile&quot;: &quot;15913215421&quot;,
+  &quot;gender&quot;: 1,
+  &quot;tel&quot;: &quot;62394&quot;,
+  &quot;email&quot;: &quot;zhangsan@gzdev.com&quot;,
+  &quot;weixinid&quot;: &quot;zhangsan4dev&quot;
+}
+
+Callback:
+
+- `err`, 调用失败时得到的异常
+- `result`, 调用正常时得到的对象
+
+Result:
+</code></pre><p>{<br />  &quot;errcode&quot;: 0,<br />  &quot;errmsg&quot;: &quot;created&quot;<br />}<br />```</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.createUser()</td> 
+      <td>exports</td>
+      <td>createUser</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>user(Object)</td>
+      <td colspan="2">成员信息</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_user_exports_updateUser">
+    updateUser
+  </h3>
+  
+
+  <p>更新成员</p><pre><code>Examples:
+</code></pre><p>api.updateUser(user, callback);</p><pre><code>{
+  &quot;userid&quot;: &quot;zhangsan&quot;,
+  &quot;name&quot;: &quot;李四&quot;,
+  &quot;department&quot;: [1],
+  &quot;position&quot;: &quot;后台工程师&quot;,
+  &quot;mobile&quot;: &quot;15913215421&quot;,
+  &quot;gender&quot;: 1,
+  &quot;tel&quot;: &quot;62394&quot;,
+  &quot;email&quot;: &quot;zhangsan@gzdev.com&quot;,
+  &quot;weixinid&quot;: &quot;lisifordev&quot;,
+  &quot;enable&quot;: 1
+}
+
+Callback:
+
+- `err`, 调用失败时得到的异常
+- `result`, 调用正常时得到的对象
+
+Result:
+</code></pre><p>{<br /> &quot;errcode&quot;: 0,<br /> &quot;errmsg&quot;: &quot;updated&quot;<br />}<br />```</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.updateUser()</td> 
+      <td>exports</td>
+      <td>updateUser</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>user(Object)</td>
+      <td colspan="2">成员信息</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_user_exports_deleteUser">
+    deleteUser
+  </h3>
+  
+
+  <p>删除成员</p><p>Examples:</p><pre><code>api.deleteUser(id, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+ &quot;errcode&quot;: 0,
+ &quot;errmsg&quot;: &quot;deleted&quot;
+}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.deleteUser()</td> 
+      <td>exports</td>
+      <td>deleteUser</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>id(Number)</td>
+      <td colspan="2">成员ID</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_user_exports_getUser">
+    getUser
+  </h3>
+  
+
+  <p>获取成员</p><p>Examples:</p><pre><code>api.getUser(id, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+  &quot;errcode&quot;: 0,
+  &quot;errmsg&quot;: &quot;ok&quot;,
+  &quot;userid&quot;: &quot;zhangsan&quot;,
+  &quot;name&quot;: &quot;李四&quot;,
+  &quot;department&quot;: [1, 2],
+  &quot;position&quot;: &quot;后台工程师&quot;,
+  &quot;mobile&quot;: &quot;15913215421&quot;,
+  &quot;gender&quot;: 1,
+  &quot;tel&quot;: &quot;62394&quot;,
+  &quot;email&quot;: &quot;zhangsan@gzdev.com&quot;,
+  &quot;weixinid&quot;: &quot;lisifordev&quot;,
+  &quot;avatar&quot;: &quot;http://wx.qlogo.cn/mmopen/ajNVdqHZLLA3WJ6DSZUfiakYe37PKnQhBIeOQBO4czqrnZDS79FH5Wm5m4X69TBicnHFlhiafvDwklOpZeXYQQ2icg/0&quot;,
+  &quot;status&quot;: 1
+}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.getUser()</td> 
+      <td>exports</td>
+      <td>getUser</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>id(Number)</td>
+      <td colspan="2">成员ID</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_user_exports_getDepartmentUsers">
+    getDepartmentUsers
+  </h3>
+  
+
+  <p>获取部门成员</p><p>Examples:</p><pre><code>api.getDepartmentUsers(departmentId, fetchChild, status, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+  &quot;errcode&quot;: 0,
+  &quot;errmsg&quot;: &quot;ok&quot;,
+  &quot;userlist&quot;: [
+    {
+      &quot;userid&quot;: &quot;zhangsan&quot;,
+      &quot;name&quot;: &quot;李四&quot;
+    }
+  ]
+}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.getDepartmentUsers()</td> 
+      <td>exports</td>
+      <td>getDepartmentUsers</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>departmentId(Number)</td>
+      <td colspan="2">部门ID</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>fetchChild(Number)</td>
+      <td colspan="2">值：1/0，是否递归获取子部门下面的成员</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>status(Number)</td>
+      <td colspan="2">0获取全部员工，1获取已关注成员列表，2获取禁用成员列表，4获取未关注成员列表。status可叠加</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_user_exports_getUserIdByCode">
+    getUserIdByCode
+  </h3>
+  
+
+  <p>根据Code获取用户ID</p><p>详情：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=根据code获取成员信息">http://qydev.weixin.qq.com/wiki/index.php?title=根据code获取成员信息</a><br />Examples:</p><pre><code>api.getUserIdByCode(code, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+  &quot;UserId&quot;: &quot;USERID&quot;
+}
+</code></pre>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.getUserIdByCode()</td> 
+      <td>exports</td>
+      <td>getUserIdByCode</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>code(String)</td>
+      <td colspan="2">OAuth授权获取的code</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="api_user_exports_getAuthorizeURL">
+    getAuthorizeURL
+  </h3>
+  
+
+  <p>获取授权页面的URL地址</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>exports.getAuthorizeURL()</td> 
+      <td>exports</td>
+      <td>getAuthorizeURL</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>redirect(String)</td>
+      <td colspan="2">授权后要跳转的地址</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>state(String)</td>
+      <td colspan="2">开发者可提供的数据</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>scope(String)</td>
+      <td colspan="2">作用范围，值为snsapi_userinfo和snsapi_base，前者用于弹出，后者用于跳转</td>
+    </tr>
+  
+
+  
+  </table>
+  
+</section>
+
+      
+        <section id="api_list" class="api">
+  <h2>list: API索引</h2>
+  <ul class="indexs">
+  
+    <li>
+      <a href="#list__List">List</a>
+    </li>
+
+    <li>
+      <a href="#list__get">get</a>
+    </li>
+
+    <li>
+      <a href="#list_List_add">add</a>
+    </li>
+
+    <li>
+      <a href="#list_List_get">get</a>
+    </li>
+
+    <li>
+      <a href="#list_List_clear">clear</a>
+    </li>
+
+  </ul>
+  <hr />
+
+  
+  <h3 data-id="list__List">
+    List
+  </h3>
+  
+
+  <p>回复列表类型</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>函数</td>
+      <td>List()</td> 
+      <td></td>
+      <td>List</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="list__get">
+    get
+  </h3>
+  
+
+  <p>从List对象中根据key取出对应的handler</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>List.prototype.get()</td> 
+      <td></td>
+      <td>get</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>key(String)</td>
+      <td colspan="2">列表中的关键词</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="list_List_add">
+    add
+  </h3>
+  
+
+  <p>静态方法，根据items生成List对象，并放置到缓存中</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>List.add()</td> 
+      <td>List</td>
+      <td>add</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>name(String)</td>
+      <td colspan="2">列表名字</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>items(Array)</td>
+      <td colspan="2">元素列表</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="list_List_get">
+    get
+  </h3>
+  
+
+  <p>静态方法，从缓存中根据名字取出List对象</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>List.get()</td> 
+      <td>List</td>
+      <td>get</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>name(String)</td>
+      <td colspan="2">列表名字</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="list_List_clear">
+    clear
+  </h3>
+  
+
+  <p>静态方法，清空缓存的所有的List对象</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>List.clear()</td> 
+      <td>List</td>
+      <td>clear</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>name(String)</td>
+      <td colspan="2">列表名字</td>
+    </tr>
+  
+
+  
+  </table>
+  
+</section>
+
+      
+        <section id="api_msg_crypto" class="api">
+  <h2>msg_crypto: API索引</h2>
+  <ul class="indexs">
+  
+    <li>
+      <a href="#msg_crypto__PKCS7Encoder">PKCS7Encoder</a>
+    </li>
+
+    <li>
+      <a href="#msg_crypto_PKCS7Encoder_decode">decode</a>
+    </li>
+
+    <li>
+      <a href="#msg_crypto_PKCS7Encoder_encode">encode</a>
+    </li>
+
+    <li>
+      <a href="#msg_crypto__getRandomString">getRandomString</a>
+    </li>
+
+    <li>
+      <a href="#msg_crypto__WXBizMsgCrypt">WXBizMsgCrypt</a>
+    </li>
+
+    <li>
+      <a href="#msg_crypto__getSignature">getSignature</a>
+    </li>
+
+    <li>
+      <a href="#msg_crypto__decrypt">decrypt</a>
+    </li>
+
+    <li>
+      <a href="#msg_crypto__encrypt">encrypt</a>
+    </li>
+
+  </ul>
+  <hr />
+
+  
+  <h3 data-id="msg_crypto__PKCS7Encoder">
+    PKCS7Encoder
+  </h3>
+  
+
+  <p>提供基于PKCS7算法的加解密接口</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>声明</td>
+      <td>PKCS7Encoder</td> 
+      <td></td>
+      <td>PKCS7Encoder</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="msg_crypto_PKCS7Encoder_decode">
+    decode
+  </h3>
+  
+
+  <p>删除解密后明文的补位字符</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>PKCS7Encoder.decode()</td> 
+      <td>PKCS7Encoder</td>
+      <td>decode</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>text(String)</td>
+      <td colspan="2">解密后的明文</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="msg_crypto_PKCS7Encoder_encode">
+    encode
+  </h3>
+  
+
+  <p>对需要加密的明文进行填充补位</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>PKCS7Encoder.encode()</td> 
+      <td>PKCS7Encoder</td>
+      <td>encode</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>text(String)</td>
+      <td colspan="2">需要进行填充补位操作的明文</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="msg_crypto__getRandomString">
+    getRandomString
+  </h3>
+  
+
+  <p>获取指定长度的随机字符串</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>函数</td>
+      <td>getRandomString()</td> 
+      <td></td>
+      <td>getRandomString</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>length(Number)</td>
+      <td colspan="2">需要的字符串的长度</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="msg_crypto__WXBizMsgCrypt">
+    WXBizMsgCrypt
+  </h3>
+  
+
+  <p>微信企业平台加解密信息构造函数</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>函数</td>
+      <td>WXBizMsgCrypt()</td> 
+      <td></td>
+      <td>WXBizMsgCrypt</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>token(String)</td>
+      <td colspan="2">公众平台上，开发者设置的Token</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>encodingAESKey(String)</td>
+      <td colspan="2">公众平台上，开发者设置的EncodingAESKey</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>corpId(String)</td>
+      <td colspan="2">企业号的CorpId</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="msg_crypto__getSignature">
+    getSignature
+  </h3>
+  
+
+  <p>获取签名</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>WXBizMsgCrypt.prototype.getSignature()</td> 
+      <td></td>
+      <td>getSignature</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>timestamp(String)</td>
+      <td colspan="2">时间戳</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>nonce(String)</td>
+      <td colspan="2">随机数</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>encrypt(String)</td>
+      <td colspan="2">加密后的文本</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="msg_crypto__decrypt">
+    decrypt
+  </h3>
+  
+
+  <p>对密文进行解密</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>WXBizMsgCrypt.prototype.decrypt()</td> 
+      <td></td>
+      <td>decrypt</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>text(String)</td>
+      <td colspan="2">待解密的密文</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="msg_crypto__encrypt">
+    encrypt
+  </h3>
+  
+
+  <p>对明文进行加密</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>WXBizMsgCrypt.prototype.encrypt()</td> 
+      <td></td>
+      <td>encrypt</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>text(String)</td>
+      <td colspan="2">待加密的明文</td>
+    </tr>
+  
+
+  
+  </table>
+  
+</section>
+
+      
+        <section id="api_session" class="api">
+  <h2>session: API索引</h2>
+  <ul class="indexs">
+  
+    <li>
+      <a href="#session__Session">Session</a>
+    </li>
+
+    <li>
+      <a href="#session__save">save</a>
+    </li>
+
+    <li>
+      <a href="#session__destroy">destroy</a>
+    </li>
+
+  </ul>
+  <hr />
+
+  
+  <h3 data-id="session__Session">
+    Session
+  </h3>
+  
+
+  <p>Session构造函数，用于与Connect的Session中间件集成的会话脚本</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>函数</td>
+      <td>Session()</td> 
+      <td></td>
+      <td>Session</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>id(String)</td>
+      <td colspan="2">Session ID</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>req(Object)</td>
+      <td colspan="2">Connect中的请求对象</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>data(Object)</td>
+      <td colspan="2">可选的其余数据，将被合并进Session对象中</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="session__save">
+    save
+  </h3>
+  
+
+  <p>保存Session对象到实际的存储中</p><p>Callback:</p><ul>
+<li><code>err</code>, 错误对象，保存发生错误时传入</li>
+</ul>
+
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>Session.prototype.save()</td> 
+      <td></td>
+      <td>save</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">保存Session的回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="session__destroy">
+    destroy
+  </h3>
+  
+
+  <p>销毁Session对象</p><p>Callback:</p><ul>
+<li><code>err</code>, 错误对象，删除发生错误时传入</li>
+</ul>
+
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>Session.prototype.destroy()</td> 
+      <td></td>
+      <td>destroy</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">从存储中删除Session数据后的回调函数</td>
+    </tr>
+  
+
+  
+  </table>
+  
+</section>
+
+      
+        <section id="api_util" class="api">
+  <h2>util: API索引</h2>
+  <ul class="indexs">
+  
+  </ul>
+  <hr />
+
+</section>
+
+      
+        <section id="api_wechat-enterprise" class="api">
+  <h2>wechat-enterprise: API索引</h2>
+  <ul class="indexs">
+  
+    <li>
+      <a href="#wechat-enterprise__Handler">Handler</a>
+    </li>
+
+    <li>
+      <a href="#wechat-enterprise__setHandler">setHandler</a>
+    </li>
+
+    <li>
+      <a href="#wechat-enterprise__getHandler">getHandler</a>
+    </li>
+
+    <li>
+      <a href="#wechat-enterprise__middlewarify">middlewarify</a>
+    </li>
+
+    <li>
+      <a href="#wechat-enterprise__middleware">middleware</a>
+    </li>
+
+  </ul>
+  <hr />
+
+  
+  <h3 data-id="wechat-enterprise__Handler">
+    Handler
+  </h3>
+  
+
+  <p>微信自动回复平台的内部的Handler对象</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>函数</td>
+      <td>Handler()</td> 
+      <td></td>
+      <td>Handler</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>config(Object)</td>
+      <td colspan="2">企业号的开发者配置对象</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>handle(Function)</td>
+      <td colspan="2">handle对象 
+config:
+```
+{
+  token: &#39;&#39;,          // 公众平台上，开发者设置的Token
+  encodingAESKey: &#39;&#39;, // 公众平台上，开发者设置的EncodingAESKey
+  corpId: &#39;&#39;,         // 企业号的CorpId
+}
+```</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="wechat-enterprise__setHandler">
+    setHandler
+  </h3>
+  
+
+  <p>设置handler对象<br />按消息设置handler对象的快捷方式</p><ul>
+<li><code>text(fn)</code></li>
+<li><code>image(fn)</code></li>
+<li><code>voice(fn)</code></li>
+<li><code>video(fn)</code></li>
+<li><code>location(fn)</code></li>
+<li><code>link(fn)</code></li>
+<li><code>event(fn)</code></li>
+</ul>
+
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>Handler.prototype.setHandler()</td> 
+      <td></td>
+      <td>setHandler</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>type(String)</td>
+      <td colspan="2">handler处理的消息类型</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>handle(Function)</td>
+      <td colspan="2">handle对象</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="wechat-enterprise__getHandler">
+    getHandler
+  </h3>
+  
+
+  <p>根据消息类型取出handler对象</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>Handler.prototype.getHandler()</td> 
+      <td></td>
+      <td>getHandler</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>type(String)</td>
+      <td colspan="2">消息类型</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="wechat-enterprise__middlewarify">
+    middlewarify
+  </h3>
+  
+
+  <p>根据Handler对象生成响应方法，并最终生成中间件函数</p>
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>方法</td>
+      <td>Handler.prototype.middlewarify()</td> 
+      <td></td>
+      <td>middlewarify</td>
+    </tr>
+  
+
+  
+  </table>
+  
+  
+  <h3 data-id="wechat-enterprise__middleware">
+    middleware
+  </h3>
+  
+
+  <p>根据口令</p><p>Examples:<br />使用wechat作为自动回复中间件的三种方式</p><pre><code>wechat(config, function (req, res, next) {});
+
+wechat(config, wechat.text(function (message, req, res, next) {
+  // TODO
+}).location(function (message, req, res, next) {
+  // TODO
+}));
+
+wechat(config)
+  .text(function (message, req, res, next) {
+    // TODO
+  }).location(function (message, req, res, next) {
+   // TODO
+  }).middleware();
+</code></pre><p>静态方法</p><ul>
+<li><code>text</code>，处理文字推送的回调函数，接受参数为(text, req, res, next)。</li>
+<li><code>image</code>，处理图片推送的回调函数，接受参数为(image, req, res, next)。</li>
+<li><code>voice</code>，处理声音推送的回调函数，接受参数为(voice, req, res, next)。</li>
+<li><code>video</code>，处理视频推送的回调函数，接受参数为(video, req, res, next)。</li>
+<li><code>location</code>，处理位置推送的回调函数，接受参数为(location, req, res, next)。</li>
+<li><code>link</code>，处理链接推送的回调函数，接受参数为(link, req, res, next)。</li>
+<li><code>event</code>，处理事件推送的回调函数，接受参数为(event, req, res, next)。</li>
+</ul>
+
+
+  <table class="table table-striped table-bordered table-hover table-condensed">
+  
+    <tr>
+      <td>函数</td>
+      <td>middleware()</td> 
+      <td></td>
+      <td>middleware</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>config(Object)</td>
+      <td colspan="2">企业号的开发者配置对象</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
+      <td>handle(Function)</td>
+      <td colspan="2">生成的回调函数，参见示例</td>
+    </tr>
+  
+
+  
+  </table>
+  
+</section>
+
+      
+    </div>
+  </div>
+</div>
+      <footer class="footer">
+        <div class="container">
+          <p class="pull-right">
+            <a href="#">Back to top</a>
+          </p>
+          <p>此文档通过doxmate生成。主题借鉴Bootstrap API文档风格，注解基于<a href="https://github.com/visionmedia/dox">Dox</a>。欢迎关注doxmate作者<a href="http://weibo.com/shyvo" target="_blank">@朴灵</a></p>
+          <ul class="footer-links">
+            <li><a href="https://github.com/visionmedia/dox">Dox主页</a></li>
+            <li><a href="http://html5ify.com/doxmate">Doxmate主页</a></li>
+            <li><a href="https://github.com/JacksonTian/doxmate">Doxmate源码</a></li>
+            <li><a href="https://github.com/JacksonTian/doxmate/issues?state=open">提交bug</a></li>
+          </ul>
+      </div>
+    </footer>
+    <script>
+      $(function() {
+        $('pre').addClass('prettyprint');
+        $('td pre').removeClass('prettyprint');
+        prettyPrint();
+        var $window = $(window);
+        $('.bs-docs-sidenav').affix({
+          offset: {
+            top: function () {
+              return $window.width() <= 980 ? 290 : 210
+            },
+            bottom: 270
+          }
+        });
+        $(".content").find('h1, h2, h3, h4, h5, h6').each(function () {
+          var node = $(this);
+          // 总是设置id
+          node.attr("id", node.data('id') || "index_" + node.text());
+          node.css("paddingTop", 50);
+        });
+      });
+    </script>
+  
+  </body>
+</html>
+
