@@ -40,7 +40,7 @@ describe('lib/msg_crypto.js', function () {
     it('encode should ok', function () {
       var buf = new Buffer('text');
       var encoded = PKCS7Encoder.encode(buf);
-      expect(encoded.length % 32).to.be(0);
+      expect((encoded.length + 1) % 32).to.be(0);
       expect((encoded[encoded.length - 1] + 4) % 32).to.be(0);
     });
 
