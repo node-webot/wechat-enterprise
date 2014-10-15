@@ -1,0 +1,11 @@
+coverage
+doc
+figures
+test
+node_modules
+.gitignore
+.jshintrc
+.npmignore
+.travis.yml
+Makefile
+MIT-License

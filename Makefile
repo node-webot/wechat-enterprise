@@ -5,6 +5,11 @@ ISTANBUL = ./node_modules/.bin/istanbul
 MOCHA = ./node_modules/mocha/bin/_mocha
 COVERALLS = ./node_modules/coveralls/bin/coveralls.js
 
+debug:
+	@NODE_ENV=test ./node_modules/.bin/node-debug $(MOCHA) -R $(REPORTER) -t $(TIMEOUT) \
+		$(MOCHA_OPTS) \
+		$(TESTS)
+
 test:
 	@NODE_ENV=test $(MOCHA) -R $(REPORTER) -t $(TIMEOUT) \
 		$(MOCHA_OPTS) \

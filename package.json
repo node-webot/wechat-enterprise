@@ -36,7 +36,8 @@
     "mocha-lcov-reporter": "*",
     "muk": "*",
     "rewire": "*",
-    "istanbul": "*"
+    "istanbul": "*",
+    "node-inspector": "*"
   },
   "author": "Jackson Tian",
   "license": "MIT",

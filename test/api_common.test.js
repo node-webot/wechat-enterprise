@@ -84,4 +84,38 @@ describe('common.js', function () {
       });
     });
   });
+
+  describe('getLatestToken', function () {
+    it('should ok', function (done) {
+      var api = new API(config.corpid, config.corpsecret);
+      api.getLatestToken(function (err, token) {
+        expect(err).not.to.be.ok();
+        expect(token).to.only.have.keys('accessToken');
+        done();
+      });
+    });
+
+    it('should get mock error', function (done) {
+      var api = new API(config.corpid, config.corpsecret, 1, function (callback) {
+        callback(new Error('mock error'));
+      });
+      api.getLatestToken(function (err, token) {
+        expect(err).to.be.ok();
+        expect(err).to.have.property('message', 'mock error');
+        done();
+      });
+    });
+
+    it('should get ok', function (done) {
+      var api = new API(config.corpid, config.corpsecret, 1, function (callback) {
+        callback(null, {accessToken: 'token'});
+      });
+      api.getLatestToken(function (err, token) {
+        expect(err).not.to.be.ok();
+        expect(token).to.have.property('accessToken', 'token');
+        done();
+      });
+    });
+  });
+
 });
