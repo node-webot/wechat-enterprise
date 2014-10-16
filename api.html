@@ -42,7 +42,7 @@
     </nav>
     <header class="jumbotron subhead">
       <div class="container">
-        <h1>wechat-enterprise <small>Version: 0.0.1 By @Jackson Tian</small></h1>
+        <h1>wechat-enterprise <small>Version: 0.0.3 By @Jackson Tian</small></h1>
         <p class="lead">
           微信公共平台企业号版本Node库
         </p>
@@ -908,7 +908,7 @@ api.deleteDepartment([id1, id2], callback);
        &quot;description&quot;: &quot;Description&quot;,
        &quot;url&quot;: &quot;URL&quot;,
        &quot;picurl&quot;: &quot;PIC_URL&quot;,
-     }    
+     }
    ]
  },
  &quot;safe&quot;:&quot;0&quot;
@@ -1395,8 +1395,8 @@ c)当包含的userid全部非法时返回
   </h3>
   
 
-  <p>创建成员</p><pre><code>Examples:
-</code></pre><p>api.createUser(user, callback);</p><pre><code>{
+  <p>创建成员</p><p>Examples:</p><pre><code>api.createUser(user, callback);
+</code></pre><p>User:</p><pre><code>{
   &quot;userid&quot;: &quot;zhangsan&quot;,
   &quot;name&quot;: &quot;张三&quot;,
   &quot;department&quot;: [1, 2],
@@ -1936,10 +1936,6 @@ Result:
     </li>
 
     <li>
-      <a href="#msg_crypto__getRandomString">getRandomString</a>
-    </li>
-
-    <li>
       <a href="#msg_crypto__WXBizMsgCrypt">WXBizMsgCrypt</a>
     </li>
 
@@ -2029,34 +2025,6 @@ Result:
       <td>参数</td>
       <td>text(String)</td>
       <td colspan="2">需要进行填充补位操作的明文</td>
-    </tr>
-  
-
-  
-  </table>
-  
-  
-  <h3 data-id="msg_crypto__getRandomString">
-    getRandomString
-  </h3>
-  
-
-  <p>获取指定长度的随机字符串</p>
-
-  <table class="table table-striped table-bordered table-hover table-condensed">
-  
-    <tr>
-      <td>函数</td>
-      <td>getRandomString()</td> 
-      <td></td>
-      <td>getRandomString</td>
-    </tr>
-  
-
-    <tr>
-      <td>参数</td>
-      <td>length(Number)</td>
-      <td colspan="2">需要的字符串的长度</td>
     </tr>
   
 
