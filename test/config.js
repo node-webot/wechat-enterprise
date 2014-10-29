@@ -1,6 +1,6 @@
 module.exports = {
-  corpid: 'wx4aa3347cec528612',
-  corpsecret: '3cHx23rTMqAgawyHLqdMrfjCXIjrjkdN_YI3iNHtAKgzNcfsDdi_3VHm4-KLJ5JI',
+  corpid: 'wx1570bcc0b3cf8bd0',
+  corpsecret: 'yy3S_IBbELpalg9HJbbWj3wnWtc-u8vwz0lT7x2fI80UKAHKdxZtS8IyYc-7jdeA',
   token: 'RMNlACHlV5ThzfRlVS4D4',
   encodingAESKey: 'bAZC8S8nz5fcQ0Ui2HxQVGbC6FzyrzWKSuDbmzpBo3G'
 };

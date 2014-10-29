@@ -3,7 +3,7 @@ var config = require('./config');
 var API = require('../').API;
 
 describe('menu', function () {
-  var api = new API(config.corpid, config.corpsecret, '1');
+  var api = new API(config.corpid, config.corpsecret, '2');
   before(function (done) {
     api.getAccessToken(done);
   });

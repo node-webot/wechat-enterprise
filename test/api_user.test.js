@@ -4,7 +4,7 @@ var API = require('../').API;
 
 var puling = 'ofL4cs7hr04cJIcu600_W-ZwwxHg';
 
-describe('valid corpid', function () {
+describe('user', function () {
   var api = new API(config.corpid, config.corpsecret);
   before(function (done) {
     api.getAccessToken(done);
@@ -21,11 +21,11 @@ describe('valid corpid', function () {
 
   var userid = 'id_' + Math.random();
 
-  it('createUser should not ok', function (done) {
+  it('createUser should ok', function (done) {
     var user = {
       "userid": userid,
       "name": "张三",
-      "department": [1, 2],
+      "department": [1],
       "position": "产品经理",
       "mobile": "15913215422",
       "gender": 1,
@@ -50,7 +50,7 @@ describe('valid corpid', function () {
     var user = {
       "userid": userid,
       "name": "new_name",
-      "department": [1, 2],
+      "department": [1],
       "position": "产品经理",
       "mobile": "15913215423",
       "gender": 1,
@@ -110,6 +110,6 @@ describe('valid corpid', function () {
 
   it('getAuthorizeURL should ok', function () {
     var url = api.getAuthorizeURL('http://baidu.com/callback');
-    expect(url).to.be('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx4aa3347cec528612&redirect_uri=http%3A%2F%2Fbaidu.com%2Fcallback&response_type=code&scope=snsapi_base&state=#wechat_redirect');
+    expect(url).to.be('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx1570bcc0b3cf8bd0&redirect_uri=http%3A%2F%2Fbaidu.com%2Fcallback&response_type=code&scope=snsapi_base&state=#wechat_redirect');
   });
 });

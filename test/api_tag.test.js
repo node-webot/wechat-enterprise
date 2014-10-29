@@ -27,7 +27,7 @@ describe('tag', function () {
   });
 
   it('addTagUsers should ok', function (done) {
-    api.addTagUsers(id, ['zhangsan'], function (err, data, res) {
+    api.addTagUsers(id, ['JacksonTian'], function (err, data, res) {
       expect(err).not.to.be.ok();
       expect(data).to.have.property('errmsg', 'ok');
       done();
@@ -36,14 +36,15 @@ describe('tag', function () {
 
   it('getTagUsers should not ok', function (done) {
     api.getTagUsers(id, function (err, data, res) {
-      expect(err).to.be.ok();
-      expect(err).to.have.property('message', 'invalid tagid');
+      expect(err).not.to.be.ok();
+      expect(data).to.have.property('errmsg', 'ok');
+      expect(data.userlist).to.be.an('array');
       done();
     });
   });
 
   it('deleteTagUsers should ok', function (done) {
-    api.deleteTagUsers(id, ['zhangsan'], function (err, data, res) {
+    api.deleteTagUsers(id, ['JacksonTian'], function (err, data, res) {
       expect(err).not.to.be.ok();
       expect(data).to.have.property('errmsg', 'ok');
       done();
