@@ -9,7 +9,7 @@ describe('department', function () {
     api.getAccessToken(done);
   });
 
-  it('createDepartment should ok', function (done) {
+  it('createDepartment(name, parentid)', function (done) {
     api.createDepartment('department_' + Math.random(), 1, function (err, data, res) {
       expect(err).not.to.be.ok();
       expect(data).to.have.key('id');
@@ -19,8 +19,38 @@ describe('department', function () {
     });
   });
 
-  it('updateDepartment should ok', function (done) {
+  it('createDepartment(name, opts)', function (done) {
+    var opts = {
+      parentid: 1,
+      order: 1
+    };
+    api.createDepartment('department_' + Math.random(), opts, function (err, data, res) {
+      expect(err).not.to.be.ok();
+      expect(data).to.have.key('id');
+      expect(data).to.have.property('errmsg', 'created');
+      done();
+    });
+  });
+
+  it('updateDepartment(id, newname) should ok', function (done) {
     api.updateDepartment(id, 'new_department_' + Math.random(), function (err, data, res) {
+      expect(err).not.to.be.ok();
+      expect(data).to.have.property('errmsg', 'updated');
+      done();
+    });
+  });
+
+  it('updateDepartment(id, opts) should ok', function (done) {
+    api.updateDepartment(id, {}, function (err, data, res) {
+      expect(err).not.to.be.ok();
+      expect(data).to.have.property('errmsg', 'updated');
+      done();
+    });
+  });
+
+  it('updateDepartment(id, opts) should ok', function (done) {
+    var opts = {name: 'new_name', parentid: 1, order: 2};
+    api.updateDepartment(id, opts, function (err, data, res) {
       expect(err).not.to.be.ok();
       expect(data).to.have.property('errmsg', 'updated');
       done();

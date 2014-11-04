@@ -1,12 +1,13 @@
 wechat enterprise
 =====================
 
-[![NPM version](https://badge.fury.io/js/wechat-enterprise.png)](http://badge.fury.io/js/wechat-enterprise)
-[![Build Status](https://travis-ci.org/node-webot/wechat-enterprise.png?branch=master)](https://travis-ci.org/node-webot/wechat-enterprise)
-[![Dependencies Status](https://david-dm.org/node-webot/wechat-enterprise.png)](https://david-dm.org/node-webot/wechat-enterprise)
-[![Coverage Status](https://coveralls.io/repos/node-webot/wechat-enterprise/badge.png)](https://coveralls.io/r/node-webot/wechat-enterprise)
-
 微信公共平台企业号版SDK
+
+## 模块状态
+- [![NPM version](https://badge.fury.io/js/wechat-enterprise.png)](http://badge.fury.io/js/wechat-enterprise)
+- [![Build Status](https://travis-ci.org/node-webot/wechat-enterprise.png?branch=master)](https://travis-ci.org/node-webot/wechat-enterprise)
+- [![Dependencies Status](https://david-dm.org/node-webot/wechat-enterprise.png)](https://david-dm.org/node-webot/wechat-enterprise)
+- [![Coverage Status](https://coveralls.io/repos/node-webot/wechat-enterprise/badge.png)](https://coveralls.io/r/node-webot/wechat-enterprise)
 
 ## 功能列表
 - 自动回复
@@ -52,12 +53,13 @@ QQ群：157964097，使用疑问，开发，贡献代码请加群。
 ```
 
  project  : wechat-enterprise
- repo age : 6 minutes
- active   : 1 days
- commits  : 1
- files    : 46
+ repo age : 7 weeks
+ active   : 15 days
+ commits  : 34
+ files    : 51
  authors  :
-     1  Jackson Tian            100.0%
+    29  Jackson Tian            85.3%
+     5  ifeiteng                14.7%
 
 ```
 
