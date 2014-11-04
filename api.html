@@ -42,7 +42,7 @@
     </nav>
     <header class="jumbotron subhead">
       <div class="container">
-        <h1>wechat-enterprise <small>Version: 0.0.3 By @Jackson Tian</small></h1>
+        <h1>wechat-enterprise <small>Version: 0.0.4 By @Jackson Tian</small></h1>
         <p class="lead">
           微信公共平台企业号版本Node库
         </p>
@@ -132,16 +132,13 @@
   </h3>
   
 
-  <p>根据appid和appsecret创建API的构造函数<br />如需跨进程跨机器进行操作Wechat API（依赖access token），access token需要进行全局维护<br />使用策略如下：</p><ol>
+  <p>根据appid和appsecret创建API的构造函数。</p><p>如需跨进程跨机器进行操作Wechat API（依赖access token），access token需要进行全局维护<br />使用策略如下：</p><ol>
 <li>调用用户传入的获取token的异步方法，获得token之后使用</li>
 <li>使用appid/appsecret获取token。并调用用户传入的保存token方法保存</li>
 </ol>
-<p>Tips:</p><ul>
-<li>如果跨机器运行wechat模块，需要注意同步机器之间的系统时间。</li>
-</ul>
 <p>Examples:</p><pre><code>var API = require(&#39;wechat&#39;).API;
-var api = new API(&#39;appid&#39;, &#39;secret&#39;);
-</code></pre><p>以上即可满足单进程使用。<br />当多进程时，token需要全局维护，以下为保存token的接口。</p><pre><code>var api = new API(&#39;corpid&#39;, &#39;secret&#39;, function (callback) {
+var api = new API(&#39;appid&#39;, &#39;secret&#39;, &#39;agentid&#39;);
+</code></pre><p>以上即可满足单进程使用。<br />当多进程时，token需要全局维护，以下为保存token的接口。</p><pre><code>var api = new API(&#39;corpid&#39;, &#39;secret&#39;, &#39;agentid&#39;, function (callback) {
   // 传入一个获取全局token的方法
   fs.readFile(&#39;access_token.txt&#39;, &#39;utf8&#39;, function (err, txt) {
     if (err) {return callback(err);}
@@ -208,7 +205,11 @@ var api = new API(&#39;appid&#39;, &#39;secret&#39;);
   </h3>
   
 
-  <p>获取最新的token</p><p>Examples:</p><pre><code>api.getLatestToken(callback);
+  <p>获取最新的token。</p><ul>
+<li>如果还没有请求过token，则发起获取Token请求。</li>
+<li>如果请求过，则调用getToken从获取之前保存的token</li>
+</ul>
+<p>Examples:</p><pre><code>api.getLatestToken(callback);
 </code></pre><p>Callback:</p><ul>
 <li><code>err</code>, 获取access token出现异常时的异常对象</li>
 <li><code>token</code>, 获取的token</li>
@@ -227,15 +228,8 @@ var api = new API(&#39;appid&#39;, &#39;secret&#39;);
 
     <tr>
       <td>参数</td>
-      <td>method(Function)</td>
-      <td colspan="2">需要封装的方法</td>
-    </tr>
-  
-
-    <tr>
-      <td>参数</td>
-      <td>args(Array)</td>
-      <td colspan="2">方法需要的参数</td>
+      <td>callback(Function)</td>
+      <td colspan="2">回调函数</td>
     </tr>
   
 
@@ -280,10 +274,6 @@ API.mixin(require(&#39;./lib/api_media&#39;));
   <ul class="indexs">
   
     <li>
-      <a href="#api_department__urllib">urllib</a>
-    </li>
-
-    <li>
       <a href="#api_department_exports_createDepartment">createDepartment</a>
     </li>
 
@@ -303,40 +293,26 @@ API.mixin(require(&#39;./lib/api_media&#39;));
   <hr />
 
   
-  <h3 data-id="api_department__urllib">
-    urllib
-  </h3>
-  
-
-  <p>详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=管理部门">http://qydev.weixin.qq.com/wiki/index.php?title=管理部门</a></p>
-
-  <table class="table table-striped table-bordered table-hover table-condensed">
-  
-    <tr>
-      <td>声明</td>
-      <td>urllib</td> 
-      <td></td>
-      <td>urllib</td>
-    </tr>
-  
-
-  
-  </table>
-  
-  
   <h3 data-id="api_department_exports_createDepartment">
     createDepartment
   </h3>
   
 
-  <p>创建部门</p><pre><code>Examples:
-</code></pre><p>api.createDepartment(name, id, callback);</p><pre><code>Callback:
-
-- `err`, 调用失败时得到的异常
-- `result`, 调用正常时得到的对象
-
-Result:
-</code></pre><p>{<br /> &quot;errcode&quot;: 0,<br /> &quot;errmsg&quot;: &quot;created&quot;,<br /> &quot;id&quot;: 2<br />}<br />```</p>
+  <p>创建部门<br />详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=管理部门">http://qydev.weixin.qq.com/wiki/index.php?title=管理部门</a></p><p>Examples:</p><pre><code>api.createDepartment(name, opts, callback);
+</code></pre><p>Opts:</p><ul>
+<li><code>parentid</code>, 父部门id，根部门id为1</li>
+<li><code>order</code>，在父部门中的次序。从1开始，数字越大排序越靠后</li>
+</ul>
+<p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+ &quot;errcode&quot;: 0,
+ &quot;errmsg&quot;: &quot;created&quot;,
+ &quot;id&quot;: 2
+}
+</code></pre>
 
   <table class="table table-striped table-bordered table-hover table-condensed">
   
@@ -357,8 +333,8 @@ Result:
 
     <tr>
       <td>参数</td>
-      <td>parentid(Number)</td>
-      <td colspan="2">上级部门ID</td>
+      <td>opts(Object)</td>
+      <td colspan="2">选项</td>
     </tr>
   
 
@@ -378,8 +354,14 @@ Result:
   </h3>
   
 
-  <p>更新部门</p><p>Examples:</p><pre><code>api.updateDepartment(id, name, callback);
-</code></pre><p>Callback:</p><ul>
+  <p>更新部门</p><p>Examples:</p><pre><code>var opts = {name: &#39;new name&#39;, parentid: 1, order: 5};
+api.updateDepartment(id, opts, callback);
+</code></pre><p>Opts:</p><ul>
+<li><code>name</code>, 新的部门名字。可选</li>
+<li><code>parentid</code>, 父部门id，根部门id为1。可选</li>
+<li><code>order</code>，在父部门中的次序。从1开始，数字越大排序越靠后。可选，默认为1</li>
+</ul>
+<p>Callback:</p><ul>
 <li><code>err</code>, 调用失败时得到的异常</li>
 <li><code>result</code>, 调用正常时得到的对象</li>
 </ul>
@@ -408,8 +390,8 @@ Result:
 
     <tr>
       <td>参数</td>
-      <td>name(String)</td>
-      <td colspan="2">部门新名字</td>
+      <td>opts(Object)</td>
+      <td colspan="2">选项</td>
     </tr>
   
 
@@ -723,7 +705,7 @@ api.deleteDepartment([id1, id2], callback);
   </h3>
   
 
-  <p>获取菜单<br />详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=获取菜单列表">http://qydev.weixin.qq.com/wiki/index.php?title=获取菜单列表</a></p><p>Examples:</p><pre><code>api.getMenu(agentId, callback);
+  <p>获取菜单<br />详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=获取菜单列表">http://qydev.weixin.qq.com/wiki/index.php?title=获取菜单列表</a></p><p>Examples:</p><pre><code>api.getMenu(callback);
 </code></pre><p>Callback:</p><ul>
 <li><code>err</code>, 调用失败时得到的异常</li>
 <li><code>result</code>, 调用正常时得到的对象</li>
@@ -806,10 +788,6 @@ api.deleteDepartment([id1, id2], callback);
   <ul class="indexs">
   
     <li>
-      <a href="#api_message__urllib">urllib</a>
-    </li>
-
-    <li>
       <a href="#api_message_exports_send">send</a>
     </li>
 
@@ -817,33 +795,12 @@ api.deleteDepartment([id1, id2], callback);
   <hr />
 
   
-  <h3 data-id="api_message__urllib">
-    urllib
-  </h3>
-  
-
-  <p>详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=发送接口说明">http://qydev.weixin.qq.com/wiki/index.php?title=发送接口说明</a></p>
-
-  <table class="table table-striped table-bordered table-hover table-condensed">
-  
-    <tr>
-      <td>声明</td>
-      <td>urllib</td> 
-      <td></td>
-      <td>urllib</td>
-    </tr>
-  
-
-  
-  </table>
-  
-  
   <h3 data-id="api_message_exports_send">
     send
   </h3>
   
 
-  <p>发送消息分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）<br />Examples:</p><pre><code>api.send(to, message, callback);
+  <p>发送消息分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）<br />详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=发送接口说明">http://qydev.weixin.qq.com/wiki/index.php?title=发送接口说明</a><br />Examples:</p><pre><code>api.send(to, message, callback);
 </code></pre><p>To:</p><pre><code>{
  &quot;touser&quot;: &quot;UserID1|UserID2|UserID3&quot;,
  &quot;toparty&quot;: &quot; PartyID1 | PartyID2 &quot;,
@@ -913,14 +870,43 @@ api.deleteDepartment([id1, id2], callback);
  },
  &quot;safe&quot;:&quot;0&quot;
 }
-MP消息：
-</code></pre><p>{<br /> &quot;msgtype&quot;: &quot;mpnews&quot;,<br /> &quot;mpnews&quot;: {<br />   &quot;articles&quot;:[<br />     {<br />       &quot;thumb_media_id&quot;: &quot;id&quot;,<br />       &quot;author&quot;: &quot;Author&quot;,<br />       &quot;content_source_url&quot;: &quot;URL&quot;,<br />       &quot;content&quot;: &quot;Content&quot;<br />       &quot;digest&quot;: &quot;Digest description&quot;,<br />       &quot;show_cover_pic&quot;: &quot;0&quot;<br />     },<br />     {<br />       &quot;thumb_media_id&quot;: &quot;id&quot;,<br />       &quot;author&quot;: &quot;Author&quot;,<br />       &quot;content_source_url&quot;: &quot;URL&quot;,<br />       &quot;content&quot;: &quot;Content&quot;<br />       &quot;digest&quot;: &quot;Digest description&quot;,<br />       &quot;show_cover_pic&quot;: &quot;0&quot;<br />     }<br />   ],<br />   &quot;media_id&quot;: &quot;id&quot;<br /> },<br /> &quot;safe&quot;:&quot;0&quot;<br />}</p><pre><code>Callback:
-
-- `err`, 调用失败时得到的异常
-- `result`, 调用正常时得到的对象
-
-Result:
-</code></pre><p>{<br /> &quot;errcode&quot;: 0,<br /> &quot;errmsg&quot;: &quot;ok&quot;,<br /> &quot;invaliduser&quot;: &quot;UserID1&quot;,<br /> &quot;invalidparty&quot;:&quot;PartyID1&quot;,<br /> &quot;invalidtag&quot;:&quot;TagID1&quot;<br />}<br />```</p>
+</code></pre><p>MP消息：</p><pre><code>{
+ &quot;msgtype&quot;: &quot;mpnews&quot;,
+ &quot;mpnews&quot;: {
+   &quot;articles&quot;:[
+     {
+       &quot;thumb_media_id&quot;: &quot;id&quot;,
+       &quot;author&quot;: &quot;Author&quot;,
+       &quot;content_source_url&quot;: &quot;URL&quot;,
+       &quot;content&quot;: &quot;Content&quot;
+       &quot;digest&quot;: &quot;Digest description&quot;,
+       &quot;show_cover_pic&quot;: &quot;0&quot;
+     },
+     {
+       &quot;thumb_media_id&quot;: &quot;id&quot;,
+       &quot;author&quot;: &quot;Author&quot;,
+       &quot;content_source_url&quot;: &quot;URL&quot;,
+       &quot;content&quot;: &quot;Content&quot;
+       &quot;digest&quot;: &quot;Digest description&quot;,
+       &quot;show_cover_pic&quot;: &quot;0&quot;
+     }
+   ],
+   &quot;media_id&quot;: &quot;id&quot;
+ },
+ &quot;safe&quot;:&quot;0&quot;
+}
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+ &quot;errcode&quot;: 0,
+ &quot;errmsg&quot;: &quot;ok&quot;,
+ &quot;invaliduser&quot;: &quot;UserID1&quot;,
+ &quot;invalidparty&quot;:&quot;PartyID1&quot;,
+ &quot;invalidtag&quot;:&quot;TagID1&quot;
+}
+</code></pre>
 
   <table class="table table-striped table-bordered table-hover table-condensed">
   
@@ -964,10 +950,6 @@ Result:
   <ul class="indexs">
   
     <li>
-      <a href="#api_tag__urllib">urllib</a>
-    </li>
-
-    <li>
       <a href="#api_tag_exports_createTag">createTag</a>
     </li>
 
@@ -995,41 +977,22 @@ Result:
   <hr />
 
   
-  <h3 data-id="api_tag__urllib">
-    urllib
-  </h3>
-  
-
-  <p>详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=管理标签">http://qydev.weixin.qq.com/wiki/index.php?title=管理标签</a></p>
-
-  <table class="table table-striped table-bordered table-hover table-condensed">
-  
-    <tr>
-      <td>声明</td>
-      <td>urllib</td> 
-      <td></td>
-      <td>urllib</td>
-    </tr>
-  
-
-  
-  </table>
-  
-  
   <h3 data-id="api_tag_exports_createTag">
     createTag
   </h3>
   
 
-  <p>创建标签</p><pre><code>Examples:
-</code></pre><p>api.createTag(name, callback);</p><pre><code>
-Callback:
-
-- `err`, 调用失败时得到的异常
-- `result`, 调用正常时得到的对象
-
-Result:
-</code></pre><p>{<br /> &quot;errcode&quot;: 0,<br /> &quot;errmsg&quot;: &quot;created&quot;,<br /> &quot;tagid&quot;: &quot;1&quot;<br />}<br />```</p>
+  <p>创建标签</p><p>详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=管理标签">http://qydev.weixin.qq.com/wiki/index.php?title=管理标签</a><br />Examples:</p><pre><code>api.createTag(name, callback);
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+ &quot;errcode&quot;: 0,
+ &quot;errmsg&quot;: &quot;created&quot;,
+ &quot;tagid&quot;: &quot;1&quot;
+}
+</code></pre>
 
   <table class="table table-striped table-bordered table-hover table-condensed">
   
@@ -1209,26 +1172,22 @@ Result:
   </h3>
   
 
-  <p>增加标签成员</p><p>Examples:</p><pre><code>api.addTagUsers(id, userIdList, callback);
-</code></pre><p>{<br />  &quot;tagid&quot;: &quot;1&quot;,<br />  &quot;userlist&quot;:[ &quot;user1&quot;,&quot;user2&quot;]<br />}</p><p>Callback:</p><ul>
+  <p>增加标签成员</p><p>Examples:</p><pre><code>var userIdList = [&#39;id1&#39;, &#39;id2&#39;];
+api.addTagUsers(id, userIdList, callback);
+</code></pre><p>Callback:</p><ul>
 <li><code>err</code>, 调用失败时得到的异常</li>
 <li><code>result</code>, 调用正常时得到的对象</li>
 </ul>
-<p>Result:</p><pre><code>a)正确时返回
-{
+<p>Result:<br />a)正确时返回</p><pre><code>{
   &quot;errcode&quot;: 0,
   &quot;errmsg&quot;: &quot;deleted&quot;
 }
-
-b)若部分userid非法，则返回
-{
+</code></pre><p>b)若部分userid非法，则返回</p><pre><code>{
   &quot;errcode&quot;: 0,
   &quot;errmsg&quot;: &quot;invalid userlist failed&quot;
   &quot;invalidlist&quot;：&quot;usr1|usr2|usr&quot;
 }
-
-c)当包含的userid全部非法时返回
-{
+</code></pre><p>c)当包含的userid全部非法时返回</p><pre><code>{
   &quot;errcode&quot;: 40031,
   &quot;errmsg&quot;: &quot;all list invalid&quot;
 }
@@ -1253,6 +1212,13 @@ c)当包含的userid全部非法时返回
 
     <tr>
       <td>参数</td>
+      <td>userIdList(Array)</td>
+      <td colspan="2">用户ID列表</td>
+    </tr>
+  
+
+    <tr>
+      <td>参数</td>
       <td>callback(Function)</td>
       <td colspan="2">回调函数</td>
     </tr>
@@ -1267,26 +1233,22 @@ c)当包含的userid全部非法时返回
   </h3>
   
 
-  <p>删除标签成员</p><p>Examples:</p><pre><code>api.deleteTagUsers(id, userIdList, callback);
+  <p>删除标签成员</p><p>Examples:</p><pre><code>var userIdList = [&#39;id1&#39;, &#39;id2&#39;];
+api.deleteTagUsers(id, userIdList, callback);
 </code></pre><p>Callback:</p><ul>
 <li><code>err</code>, 调用失败时得到的异常</li>
 <li><code>result</code>, 调用正常时得到的对象</li>
 </ul>
-<p>Result:</p><pre><code>a)正确时返回
-{
+<p>Result:<br />a)正确时返回</p><pre><code>{
   &quot;errcode&quot;: 0,
   &quot;errmsg&quot;: &quot;deleted&quot;
 }
-
-b)若部分userid非法，则返回
-{
+</code></pre><p>b)若部分userid非法，则返回</p><pre><code>{
   &quot;errcode&quot;: 0,
   &quot;errmsg&quot;: &quot;invalid userlist failed&quot;
   &quot;invalidlist&quot;：&quot;usr1|usr2|usr&quot;
 }
-
-c)当包含的userid全部非法时返回
-{
+</code></pre><p>c)当包含的userid全部非法时返回</p><pre><code>{
   &quot;errcode&quot;: 40031,
   &quot;errmsg&quot;: &quot;all list invalid&quot;
 }
@@ -1334,10 +1296,6 @@ c)当包含的userid全部非法时返回
   <ul class="indexs">
   
     <li>
-      <a href="#api_user__querystring">querystring</a>
-    </li>
-
-    <li>
       <a href="#api_user_exports_createUser">createUser</a>
     </li>
 
@@ -1369,33 +1327,12 @@ c)当包含的userid全部非法时返回
   <hr />
 
   
-  <h3 data-id="api_user__querystring">
-    querystring
-  </h3>
-  
-
-  <p>详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=管理成员">http://qydev.weixin.qq.com/wiki/index.php?title=管理成员</a></p>
-
-  <table class="table table-striped table-bordered table-hover table-condensed">
-  
-    <tr>
-      <td>声明</td>
-      <td>querystring</td> 
-      <td></td>
-      <td>querystring</td>
-    </tr>
-  
-
-  
-  </table>
-  
-  
   <h3 data-id="api_user_exports_createUser">
     createUser
   </h3>
   
 
-  <p>创建成员</p><p>Examples:</p><pre><code>api.createUser(user, callback);
+  <p>创建成员<br />详细请看：<a href="http://qydev.weixin.qq.com/wiki/index.php?title=管理成员">http://qydev.weixin.qq.com/wiki/index.php?title=管理成员</a></p><p>Examples:</p><pre><code>api.createUser(user, callback);
 </code></pre><p>User:</p><pre><code>{
   &quot;userid&quot;: &quot;zhangsan&quot;,
   &quot;name&quot;: &quot;张三&quot;,
@@ -1407,14 +1344,15 @@ c)当包含的userid全部非法时返回
   &quot;email&quot;: &quot;zhangsan@gzdev.com&quot;,
   &quot;weixinid&quot;: &quot;zhangsan4dev&quot;
 }
-
-Callback:
-
-- `err`, 调用失败时得到的异常
-- `result`, 调用正常时得到的对象
-
-Result:
-</code></pre><p>{<br />  &quot;errcode&quot;: 0,<br />  &quot;errmsg&quot;: &quot;created&quot;<br />}<br />```</p>
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+  &quot;errcode&quot;: 0,
+  &quot;errmsg&quot;: &quot;created&quot;
+}
+</code></pre>
 
   <table class="table table-striped table-bordered table-hover table-condensed">
   
@@ -1449,8 +1387,8 @@ Result:
   </h3>
   
 
-  <p>更新成员</p><pre><code>Examples:
-</code></pre><p>api.updateUser(user, callback);</p><pre><code>{
+  <p>更新成员</p><p>Examples:</p><pre><code>api.updateUser(user, callback);
+</code></pre><p>User:</p><pre><code>{
   &quot;userid&quot;: &quot;zhangsan&quot;,
   &quot;name&quot;: &quot;李四&quot;,
   &quot;department&quot;: [1],
@@ -1462,14 +1400,15 @@ Result:
   &quot;weixinid&quot;: &quot;lisifordev&quot;,
   &quot;enable&quot;: 1
 }
-
-Callback:
-
-- `err`, 调用失败时得到的异常
-- `result`, 调用正常时得到的对象
-
-Result:
-</code></pre><p>{<br /> &quot;errcode&quot;: 0,<br /> &quot;errmsg&quot;: &quot;updated&quot;<br />}<br />```</p>
+</code></pre><p>Callback:</p><ul>
+<li><code>err</code>, 调用失败时得到的异常</li>
+<li><code>result</code>, 调用正常时得到的对象</li>
+</ul>
+<p>Result:</p><pre><code>{
+ &quot;errcode&quot;: 0,
+ &quot;errmsg&quot;: &quot;updated&quot;
+}
+</code></pre>
 
   <table class="table table-striped table-bordered table-hover table-condensed">
   

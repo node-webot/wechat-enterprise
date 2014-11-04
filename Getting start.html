@@ -42,7 +42,7 @@
     </nav>
     <header class="jumbotron subhead">
       <div class="container">
-        <h1>wechat-enterprise <small>Version: 0.0.3 By @Jackson Tian</small></h1>
+        <h1>wechat-enterprise <small>Version: 0.0.4 By @Jackson Tian</small></h1>
         <p class="lead">
           微信公共平台企业号版本Node库
         </p>
@@ -54,12 +54,170 @@
   	<div class="col-md-3">
       <ul class="nav nav-list bs-docs-sidenav affix">
 
+  <li class="level_1">
+    <a href="#index_新手上路" title="新手上路">
+      <i class="icon-chevron-right"></i>新手上路
+    </a>
+  </li>
+
+  <li class="level_2">
+    <a href="#index_Prerequirements" title="Prerequirements">
+      <i class="icon-chevron-right"></i>Prerequirements
+    </a>
+  </li>
+
+  <li class="level_2">
+    <a href="#index_Installation" title="Installation">
+      <i class="icon-chevron-right"></i>Installation
+    </a>
+  </li>
+
+  <li class="level_2">
+    <a href="#index_Usage" title="Usage">
+      <i class="icon-chevron-right"></i>Usage
+    </a>
+  </li>
+
+  <li class="level_2">
+    <a href="#index_响应用户" title="响应用户">
+      <i class="icon-chevron-right"></i>响应用户
+    </a>
+  </li>
+
+  <li class="level_2">
+    <a href="#index_调用API" title="调用API">
+      <i class="icon-chevron-right"></i>调用API
+    </a>
+  </li>
+
+  <li class="level_2">
+    <a href="#index_集群Access Token管理" title="集群Access Token管理">
+      <i class="icon-chevron-right"></i>集群Access Token管理
+    </a>
+  </li>
+
 </ul>
 
     </div>
     <div class="col-md-9">
       <section>
-        
+        <h1>新手上路</h1>
+<h2>Prerequirements</h2>
+<ul>
+<li>前往<a href="https://qy.weixin.qq.com/">微信</a>申请企业号</li>
+<li>得到<code>CorpID</code>、<code>Token</code>和<code>EncodingAESKey</code></li>
+</ul>
+<h2>Installation</h2>
+<pre><code class="lang-sh">$ npm install wechat-enterprise
+</code></pre>
+<h2>Usage</h2>
+<pre><code>var wechat = require(&#39;wechat-enterprise&#39;);
+var app = express();
+app.use(connect.query());
+
+var config = {
+  token: &#39;YOUR Token&#39;,
+  encodingAESKey: &#39;YOUR EncodingAESKey&#39;,
+  corpId: &#39;YOUR CorpID&#39;
+};
+
+app.use(&#39;/corp&#39;, wechat(config, function (req, res, next) {
+  res.writeHead(200);
+  res.end(&#39;hello node api&#39;);
+}));
+
+// 或者
+app.use(&#39;/corp&#39;, wechat(config, wechat.text(function (message, req, res, next) {
+  // TODO
+}).location(function (message, req, res, next) {
+  // TODO
+})));
+
+// 或者
+app.use(&#39;/corp&#39;, wechat(config)
+  .text(function (message, req, res, next) {
+    // TODO
+  })
+  .location(function (message, req, res, next) {
+    // TODO
+  })
+  .event(function (message, req, res, next) {
+    // TODO
+  })
+  .middleware());
+</code></pre><h2>响应用户</h2>
+<p>调用<code>res.reply()</code>方法响应用户。类似<code>res.end()</code>。</p><pre><code>function (message, req, res, next) {
+  // 响应文字
+  res.reply(&#39;hehe&#39;);
+  res.reply({type: &quot;text&quot;, content: &#39;content&#39;});
+  // 响应音乐
+  res.reply({
+    type: &quot;music&quot;,
+    content: {
+      title: &quot;来段音乐吧&quot;,
+      description: &quot;一无所有&quot;,
+      musicUrl: &quot;http://mp3.com/xx.mp3&quot;,
+      hqMusicUrl: &quot;http://mp3.com/xx.mp3&quot;
+    }
+  });
+  // 响应图文消息
+  res.reply([
+    {
+      title: &#39;你来我家接我吧&#39;,
+      description: &#39;这是女神与高富帅之间的对话&#39;,
+      picurl: &#39;http://nodeapi.cloudfoundry.com/qrcode.jpg&#39;,
+      url: &#39;http://nodeapi.cloudfoundry.com/&#39;
+    }
+  ]);
+  // 响应图片
+  res.reply({
+    type: &quot;image&quot;,
+    content: {
+      mediaId: &#39;mediaId&#39;
+    }
+  });
+  // 响应图片
+  res.reply({
+    type: &quot;image&quot;,
+    content: {
+      mediaId: &#39;mediaId&#39;
+    }
+  });
+  // 响应声音
+  res.reply({
+    type: &quot;voice&quot;,
+    content: {
+      mediaId: &#39;mediaId&#39;
+    }
+  });
+  // 响应视频
+  res.reply({
+    type: &quot;video&quot;,
+    content: {
+      mediaId: &#39;mediaId&#39;,
+      thumbMediaId: &#39;thumbMediaId&#39;
+    }
+  });
+}
+</code></pre><h2>调用API</h2>
+<pre><code>// 构造实例
+var api = new API(&#39;YOUR CorpID&#39;, &#39;YOUR CorpSecret&#39;, &#39;YOUR Agent&#39;);
+api.getUser(&#39;userid&#39;, function (err, data, res) {
+  // response
+});
+</code></pre><p>无需尝试处理access token。</p><h2>集群Access Token管理</h2>
+<p>请修改saveToken和getToken两个方法：</p><pre><code>var api = new API(&#39;corpid&#39;, &#39;secret&#39;, &#39;agentid&#39;, function (callback) {
+  // 传入一个获取全局token的方法
+  fs.readFile(&#39;access_token.txt&#39;, &#39;utf8&#39;, function (err, txt) {
+    if (err) {return callback(err);}
+    callback(null, JSON.parse(txt));
+  });
+}, function (token, callback) {
+  // 请将token存储到全局，跨进程、跨机器级别的全局，比如写到数据库、redis等
+  // 这样才能在cluster模式及多机情况下使用，以下为写入到文件的示例
+  fs.writeFile(&#39;access_token.txt&#39;, JSON.stringify(token), callback);
+});
+</code></pre>
       </section>
   
     </div>
