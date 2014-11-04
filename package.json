@@ -1,6 +1,6 @@
 {
   "name": "wechat-enterprise",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "微信公共平台企业号版本Node库",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/node-webot/wechat.git"
+    "url": "git://github.com/node-webot/wechat-enterprise.git"
   },
   "keywords": [
     "weixin",
