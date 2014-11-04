@@ -1,6 +1,6 @@
 {
   "name": "wechat-enterprise",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "微信公共平台企业号版本Node库",
   "main": "index.js",
   "scripts": {
