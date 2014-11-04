@@ -1,7 +1,7 @@
 var request = require('supertest');
 var tail = require('./support').tail;
 var postData = require('./support').postData;
-var WXBizMsgCrypt = require('../lib/msg_crypto');
+var WXBizMsgCrypt = require('wechat-crypto');
 
 var connect = require('connect');
 var wechat = require('../');

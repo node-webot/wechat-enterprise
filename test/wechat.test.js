@@ -5,7 +5,7 @@ var postData = require('./support').postData;
 var connect = require('connect');
 var wechat = require('../');
 var cfg = require('./config');
-var WXBizMsgCrypt = require('../lib/msg_crypto');
+var WXBizMsgCrypt = require('wechat-crypto');
 
 var app = connect();
 app.use(connect.query());

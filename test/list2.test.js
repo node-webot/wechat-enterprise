@@ -3,7 +3,7 @@ var postData = require('./support').postData;
 var request = require('supertest');
 var buildXML = require('./support').buildXML;
 var parse = require('./support').parse;
-var WXBizMsgCrypt = require('../lib/msg_crypto');
+var WXBizMsgCrypt = require('wechat-crypto');
 var cfg = require('./config');
 var expect = require('expect.js');
 

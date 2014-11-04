@@ -1,7 +1,7 @@
 var request = require('supertest');
-var template = require('./support').template;
 var support = require('./support');
 var expect = require('expect.js');
+var WXBizMsgCrypt = require('wechat-crypto');
 
 var connect = require('connect');
 var wechat = require('../');
@@ -47,7 +47,7 @@ describe('wechat.js', function () {
   });
 
   describe('talk', function () {
-    var cryptor = new wechat.WXBizMsgCrypt(cfg.token, cfg.encodingAESKey, cfg.corpid);
+    var cryptor = new WXBizMsgCrypt(cfg.token, cfg.encodingAESKey, cfg.corpid);
 
     it('should reply hehe when not trigger the list', function (done) {
       var info = {
