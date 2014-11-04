@@ -22,13 +22,11 @@ wechat enterprise
 ### 创新功能
 - 会话支持
 
-详细参见[API文档](http://node-webot.github.io/wechat-enterprise/api.html) 代码[测试覆盖率](http://node-webot.github.io/wechat-enterprise/coverage/index.html)
-
-## Installation
-
-```sh
-$ npm install wechat-enterprise
-```
+## 详细文档
+- [文档主页](http://node-webot.github.io/wechat-enterprise/index.html)
+- [API文档](http://node-webot.github.io/wechat-enterprise/api.html)
+- 代码[测试覆盖率](http://node-webot.github.io/wechat-enterprise/coverage/index.html)
+- [新手上路](http://node-webot.github.io/wechat-enterprise/Getting%20start.html)
 
 ## Show cases
 ### Node.js API自动回复
