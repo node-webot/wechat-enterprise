@@ -1,15 +1,10 @@
 {
   "name": "wechat-enterprise",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "微信公共平台企业号版本Node库",
   "main": "index.js",
   "scripts": {
     "test": "make test-all"
-  },
-  "config":{
-    "travis-cov": {
-      "threshold": 98
-    }
   },
   "repository": {
     "type": "git",
@@ -24,7 +19,7 @@
     "xml2js": "0.4.4",
     "ejs": ">=1.0.0",
     "wechat-crypto": "0.0.2",
-    "wechat-enterprise-api": "0.0.1"
+    "wechat-enterprise-api": "0.0.2"
   },
   "devDependencies": {
     "supertest": "*",
@@ -36,8 +31,7 @@
     "mocha-lcov-reporter": "*",
     "muk": "*",
     "rewire": "*",
-    "istanbul": "*",
-    "node-inspector": "*"
+    "istanbul": "*"
   },
   "author": "Jackson Tian",
   "license": "MIT",
