@@ -23,10 +23,10 @@ wechat enterprise
 - 会话支持
 
 ## 详细文档
-- [文档主页](http://node-webot.github.io/wechat-enterprise/index.html)
-- [API文档](http://node-webot.github.io/wechat-enterprise/api.html)
+- [文档主页](http://doxmate.cool/node-webot/wechat-enterprise/index.html)
+- [API文档](http://doxmate.cool/node-webot/wechat-enterprise/api.html)
 - 代码[测试覆盖率](http://node-webot.github.io/wechat-enterprise/coverage/index.html)
-- [新手上路](http://node-webot.github.io/wechat-enterprise/Getting%20start.html)
+- [新手上路](http://doxmate.cool/node-webot/wechat-enterprise/Getting%20start.html)
 
 ## Show cases
 ### Node.js API自动回复
