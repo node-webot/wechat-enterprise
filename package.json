@@ -1,6 +1,6 @@
 {
   "name": "wechat-enterprise",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "微信公共平台企业号版本Node库",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,7 @@
     "xml2js": "0.4.4",
     "ejs": ">=1.0.0",
     "wechat-crypto": "0.0.2",
-    "wechat-enterprise-api": "0.0.2"
+    "wechat-enterprise-api": "*"
   },
   "devDependencies": {
     "supertest": "*",
